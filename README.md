@@ -77,7 +77,7 @@ ScrollView(.vertical) {
 
 ## Example Project
 
-[ExampleApp](https://github.com/maxial/FormView/tree/main/ExampleApp) provides several more interesting use cases of **FormView**.
+[ExampleApp](https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview/-/tree/main/ExampleApp) provides several more interesting use cases of **FormView**.
 
 ## Installation
 
@@ -88,7 +88,7 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for au
 In Xcode 14 or later, select `File > Add Packages...` In the search bar, type
 
 ```
-https://github.com/maxial/FormView
+https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview
 ``` 
 
 Then proceed with installation.
@@ -97,10 +97,10 @@ You can add **FormView** as a dependency to the `dependencies` value of your `Pa
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/maxial/FormView", from: "main"),
+    .package(url: "https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview", from: "main"),
 ]
 ```
 
 ## License
 
-FormView is released under the MIT license. [See LICENSE](https://github.com/maxial/FormView/blob/main/LICENSE) for details.
+FormView is released under the MIT license. [See LICENSE](https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview/-/blob/main/LICENSE) for details.
