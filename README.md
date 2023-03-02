@@ -1,10 +1,10 @@
 # FormView
 
 <div align="leading">
-  <a href="https://swiftpackageindex.com/maxial/FormView" >
+  <a href="https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview" >
     <img src="https://img.shields.io/badge/SPM-compatible-orange?style=flat"/>
   </a>
-  <a href="https://swiftpackageindex.com/maxial/FormView" >
+  <a href="https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview" >
     <img src="https://img.shields.io/badge/iOS-15.0+-orange?style=flat"/>
   </a>
 </div>
