@@ -1,9 +1,6 @@
 # FormView
 
 <div align="leading">
-  <a href="https://codecov.io/gh/maxial/FormView" >
-    <img src="https://codecov.io/gh/maxial/FormView/branch/main/graph/badge.svg?token=QI9E6DH3YA"/>
-  </a>
   <a href="https://swiftpackageindex.com/maxial/FormView" >
     <img src="https://img.shields.io/badge/SPM-compatible-orange?style=flat"/>
   </a>
