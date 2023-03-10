@@ -56,7 +56,7 @@ public struct FormField: View {
                 validator.value = oldValue
             }
             
-            updateSecureText(with: newValue)
+            updateSecureText(with: newValue, isSecure: isSecure)
         }
         .onChange(of: focusField) { newValue in
             isFocused = newValue.trimmingCharacters(in: .whitespaces) == id
@@ -72,7 +72,14 @@ public struct FormField: View {
         )
     }
     
-    private func updateSecureText(with newValue: String) {
+    private func updateSecureText(with newValue: String, isSecure: Bool) {
+        if isSecure == false {
+            securedText = newValue
+            textLength = newValue.count
+            
+            return
+        }
+        
         // При смене фокуса SecureField удаляет ранее введенный текст.
         // Чтобы текст сохранялся нужно определить было ли нажато удаление или добавление нового символа
         // и выполнить перезапись обновленного текста в модель.
