@@ -32,6 +32,7 @@ struct ContentView: View {
     @State var sndEmployeeEmail: String = ""
     
     @State var companyPhone: String = ""
+    @State var companyEmail: String = ""
     
     var body: some View {
         ZStack {
@@ -102,6 +103,12 @@ struct ContentView: View {
                     text: $companyPhone,
                     validationRules: [.minLength(11), .maxLength(11), .digitsOnly],
                     inputRules: [.maxLength(11), .digitsOnly]
+                )
+                
+                MySecondFormField(
+                    "Company email",
+                    text: $companyEmail,
+                    validationRules: [.email]
                 )
             }
             .padding(.horizontal, 12)
