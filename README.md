@@ -98,6 +98,17 @@ dependencies: [
 ]
 ```
 
+### CocoaPods
+
+1. Make ```pod init``` 
+2. Add the following to Podfile 
+
+```
+pod 'FormView', :git => 'https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview', :tag => '0.0.1'
+```
+
+3. Make ```pod install```
+
 ## License
 
 FormView is released under the MIT license. [See LICENSE](https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview/-/blob/main/LICENSE) for details.
