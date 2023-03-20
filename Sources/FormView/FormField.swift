@@ -12,6 +12,7 @@ public struct FormField: View {
     @Environment(\.focusField) var focusField
     
     private let id: String
+    private let isMultiline: Bool
     private var title: LocalizedStringKey
     
     @ObservedObject private var validator: Validator<String, TextValidationRule>
@@ -27,7 +28,8 @@ public struct FormField: View {
         validationRules: [TextValidationRule] = [],
         inputRules: [TextValidationRule] = [],
         failedValidationRules: Binding<[TextValidationRule]>? = nil,
-        isSecure: Binding<Bool> = .constant(false)
+        isSecure: Binding<Bool> = .constant(false),
+        isMultiline: Bool = false
     ) {
         self.id = UUID().uuidString
         self.title = title
@@ -38,14 +40,19 @@ public struct FormField: View {
             failedValidationRules: failedValidationRules
         )
         self._isSecure = isSecure
+        self.isMultiline = isMultiline
     }
     
     public var body: some View {
         Group {
-            if isSecure {
-                SecureField(title, text: $validator.value)
+            if isMultiline {
+                TextEditor(text: $validator.value)
             } else {
-                TextField(title, text: $validator.value)
+                if isSecure {
+                    SecureField(title, text: $validator.value)
+                } else {
+                    TextField(title, text: $validator.value)
+                }
             }
         }
         .focused($isFocused)
