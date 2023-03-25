@@ -15,6 +15,7 @@ public struct FormViewModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .onPreferenceChange(FieldStatesKey.self) { newValue in
+                print(newValue)
                 fieldStates = newValue
             }
             .onSubmit(of: .text) {

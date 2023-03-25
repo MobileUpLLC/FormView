@@ -42,17 +42,18 @@ struct MyFormField: View {
                     )
                 ZStack {
                     FormField(
-                        title,
-                        text: text,
+                        value: text,
                         validationRules: validationRules,
                         inputRules: inputRules,
                         failedValidationRules: $failedValidationRules
-                    )
-                    .font(.system(size: 14))
-                    .foregroundColor(.black)
-                    .tint(Color.black)
-                    .frame(height: 40)
-                    .padding(.horizontal, 12)
+                    ) {
+                        TextField(title, text: text)
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                            .tint(Color.black)
+                            .frame(height: 40)
+                            .padding(.horizontal, 12)
+                    }
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: 12)
@@ -87,6 +88,9 @@ struct MySecondFormField: View {
     @State private var isSecure = true
     
     @FocusState private var isFocused: Bool
+    
+    @State private var securedText: String = ""
+    @State private var textLength: Int = 0
     
     init(
         _ title: LocalizedStringKey = "",
@@ -128,25 +132,30 @@ struct MySecondFormField: View {
                     }
                     
                     Group {
-                        if supportsSecure {
-                            FormField(
-                                title,
-                                text: $text,
-                                validationRules: validationRules,
-                                inputRules: inputRules,
-                                failedValidationRules: $failedValidationRules,
-                                isSecure: $isSecure
-                            )
-                            .focused($isFocused)
+                        if isSecure {
+                            SecureField(title, text: $text)
+                                .formField(
+                                    value: $text,
+                                    validationRules: validationRules,
+                                    inputRules: inputRules,
+                                    failedValidationRules: $failedValidationRules
+                                )
+                                .onChange(of: text) { newValue in
+                                    updateSecureText(with: newValue)
+                                }
+                                .focused($isFocused)
                         } else {
-                            FormField(
-                                title,
-                                text: $text,
-                                validationRules: validationRules,
-                                inputRules: inputRules,
-                                failedValidationRules: $failedValidationRules
-                            )
-                            .focused($isFocused)
+                            TextField(title, text: $text)
+                                .formField(
+                                    value: $text,
+                                    validationRules: validationRules,
+                                    inputRules: inputRules,
+                                    failedValidationRules: $failedValidationRules
+                                )
+                                .onChange(of: text) { newValue in
+                                    updateSecureText(with: newValue)
+                                }
+                                .focused($isFocused)
                         }
                     }
                     .font(Font(UIFont.systemFont(ofSize: 15, weight: .regular) as CTFont))
@@ -213,6 +222,32 @@ struct MySecondFormField: View {
         .animation(.easeIn, value: isFocused)
         .animation(.easeIn, value: isSecure)
         .animation(.easeIn, value: text.isEmpty)
+    }
+    
+    private func updateSecureText(with newValue: String) {
+        if isSecure == false {
+            securedText = newValue
+            textLength = newValue.count
+            
+            return
+        }
+        
+        // При смене фокуса SecureField удаляет ранее введенный текст.
+        // Чтобы текст сохранялся нужно определить было ли нажато удаление или добавление нового символа
+        // и выполнить перезапись обновленного текста в модель.
+        let isCharRemoved = textLength > 0 && textLength - newValue.count == textLength
+        let isCharAdded = textLength > 0 && textLength - newValue.count > 1
+        
+        if isCharRemoved {
+            securedText.removeLast()
+            text = securedText
+        } else if isCharAdded {
+            text = securedText + newValue
+        } else {
+            securedText = newValue
+        }
+        
+        textLength = newValue.count
     }
     
     private func getBorderColor() -> Color {
