@@ -20,7 +20,6 @@ public struct JumpOnSubmitModifier: ViewModifier {
     
     public func body(content: Content) -> some View {
         content
-            .focused($isFocused)
             .onChange(of: focusField) { newValue in
                 isFocused = newValue.trimmingCharacters(in: .whitespaces) == id
             }
@@ -30,6 +29,7 @@ public struct JumpOnSubmitModifier: ViewModifier {
                     FieldState(id: id, isFocused: isFocused)
                 ]
             )
+            .focused($isFocused)
     }
 }
 

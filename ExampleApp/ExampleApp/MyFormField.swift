@@ -143,7 +143,6 @@ struct MySecondFormField: View {
                                 .onChange(of: text) { newValue in
                                     updateSecureText(with: newValue)
                                 }
-                                .focused($isFocused)
                         } else {
                             TextField(title, text: $text)
                                 .formField(
@@ -155,7 +154,6 @@ struct MySecondFormField: View {
                                 .onChange(of: text) { newValue in
                                     updateSecureText(with: newValue)
                                 }
-                                .focused($isFocused)
                         }
                     }
                     .font(Font(UIFont.systemFont(ofSize: 15, weight: .regular) as CTFont))
