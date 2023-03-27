@@ -102,7 +102,7 @@ struct ContentView: View {
                 MySecondFormField(
                     "Confirm pass",
                     text: $confirmPass,
-                    validationRules: [.atLeastOneDigit, .atLeastOneLetter]
+                    validationRules: [.atLeastOneDigit, .atLeastOneLetter, .equalTo(pass)]
                 )
             }
             .padding(.horizontal, 12)

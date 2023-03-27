@@ -134,6 +134,7 @@ struct MySecondFormField: View {
                     Group {
                         if isSecure {
                             SecureField(title, text: $text)
+                                .textContentType(.newPassword)
                                 .formField(
                                     value: $text,
                                     validationRules: validationRules,

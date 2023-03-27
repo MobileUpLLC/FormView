@@ -11,6 +11,8 @@ public struct ValidateInputModifier<T: Hashable, V: ValidationRule>: ViewModifie
     
     @ObservedObject private var validator: Validator<T, V>
     
+    @FocusState private var isFocused: Bool
+    
     public init(
         value: Binding<T>,
         validationRules: [V] = [],
@@ -29,6 +31,10 @@ public struct ValidateInputModifier<T: Hashable, V: ValidationRule>: ViewModifie
         content
             .onChange(of: validator.value) { [oldValue = validator.value] newValue in
                 validateInput(oldValue: oldValue, newValue: newValue)
+            }
+            .focused($isFocused)
+            .onChange(of: isFocused) { newValue in
+                validator.validate()
             }
             .onAppear {
                 validator.validate()
