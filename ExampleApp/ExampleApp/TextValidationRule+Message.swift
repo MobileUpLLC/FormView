@@ -37,6 +37,8 @@ extension TextValidationRule {
             return "Email"
         case .notRecurringPincode:
             return "Not recurring pincode"
+        case .equalTo:
+            return "Not equal"
         case .regex(let string):
             return "Regex: \(string)"
         }

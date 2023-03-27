@@ -24,10 +24,8 @@ public struct JumpOnSubmitModifier: ViewModifier {
                 isFocused = newValue.trimmingCharacters(in: .whitespaces) == id
             }
             .preference(
-                key: FieldStatesKey.self,
-                value: [
-                    FieldState(id: id, isFocused: isFocused)
-                ]
+                key: FieldFocusStatesKey.self,
+                value: [FieldFocusState(id: id, isFocused: isFocused)]
             )
             .focused($isFocused)
     }

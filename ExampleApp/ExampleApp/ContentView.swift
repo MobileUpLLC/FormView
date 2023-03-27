@@ -8,18 +8,6 @@
 import SwiftUI
 import FormView
 
-enum FieldType: Int {
-    
-    case companyName
-    case fstEmployeeName
-    case fstEmployeeAge
-    case fstEmployeeEmail
-    case sndEmployeeName
-    case sndEmployeeAge
-    case sndEmployeeEmail
-    case companyPhone
-}
-
 struct ContentView: View {
     
     @State var companyName: String = ""
@@ -32,7 +20,8 @@ struct ContentView: View {
     @State var sndEmployeeEmail: String = ""
     
     @State var companyPhone: String = ""
-    @State var companyEmail: String = ""
+    @State var pass: String = ""
+    @State var confirmPass: String = ""
     
     var body: some View {
         ZStack {
@@ -106,9 +95,14 @@ struct ContentView: View {
                 )
                 
                 MySecondFormField(
-                    "Company email",
-                    text: $companyEmail,
-                    validationRules: [.email]
+                    "Pass",
+                    text: $pass,
+                    validationRules: [.atLeastOneDigit, .atLeastOneLetter]
+                )
+                MySecondFormField(
+                    "Confirm pass",
+                    text: $confirmPass,
+                    validationRules: [.atLeastOneDigit, .atLeastOneLetter]
                 )
             }
             .padding(.horizontal, 12)

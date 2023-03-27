@@ -9,16 +9,16 @@ import SwiftUI
 
 public struct FormViewModifier: ViewModifier {
     
-    @State private var fieldStates: [FieldState] = []
+    @State private var fieldFocusStates: [FieldFocusState] = []
     @State private var focusField: String = ""
     
     public func body(content: Content) -> some View {
         content
-            .onPreferenceChange(FieldStatesKey.self) { newValue in
-                fieldStates = newValue
+            .onPreferenceChange(FieldFocusStatesKey.self) { newValue in
+                fieldFocusStates = newValue
             }
             .onSubmit(of: .text) {
-                focusField = fieldStates.focusNextField(currentFocusField: focusField)
+                focusField = fieldFocusStates.focusNextField(currentFocusField: focusField)
             }
             .environment(\.focusField, focusField)
     }

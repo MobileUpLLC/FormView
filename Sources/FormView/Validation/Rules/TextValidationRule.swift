@@ -30,6 +30,7 @@ public enum TextValidationRule: ValidationRule {
     case noSpecialCharacters
     case email
     case notRecurringPincode
+    case equalTo(String)
     case regex(String)
     
     public func check(value: String) -> Bool {
@@ -64,6 +65,8 @@ public enum TextValidationRule: ValidationRule {
             return checkEmail(value)
         case .notRecurringPincode:
             return checkNotRecurringPincode(value)
+        case .equalTo(let confirmValue):
+            return value == confirmValue
         case .regex(let regex):
             return checkRegex(value, regex: regex)
         }

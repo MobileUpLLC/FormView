@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Array where Element == FieldState {
+extension Array where Element == FieldFocusState {
     
     mutating func focusNextField(currentFocusField: String) -> String {
         let nextIndex = (firstIndex { $0.isFocused } ?? -1) + 1
