@@ -7,18 +7,21 @@
 
 import SwiftUI
 
-public struct FormViewModifier: ViewModifier {
+struct FormViewModifier: ViewModifier {
     
     @State private var fieldFocusStates: [FieldFocusState] = []
     @State private var focusField: String = ""
     
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content
             .onPreferenceChange(FieldFocusStatesKey.self) { newValue in
                 fieldFocusStates = newValue
             }
             .onSubmit(of: .text) {
-                focusField = fieldFocusStates.focusNextField(currentFocusField: focusField)
+                focusField = FocusService.getNextFocusField(
+                    states: fieldFocusStates,
+                    currentFocusField: focusField
+                )
             }
             .environment(\.focusField, focusField)
     }
@@ -26,7 +29,7 @@ public struct FormViewModifier: ViewModifier {
 
 extension View {
     
-    public func formView() -> some View {
+    func formView() -> some View {
         modifier(FormViewModifier())
     }
 }

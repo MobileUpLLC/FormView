@@ -27,86 +27,116 @@ struct ContentView: View {
         ZStack {
             Color(red: 245/255.0, green: 246/255.0, blue: 250/255.0)
                 .ignoresSafeArea()
-            ScrollView(.vertical) {
-                MyFormField(
-                    "Company",
-                    text: $companyName,
-                    validationRules: [.noSpecialCharacters],
-                    inputRules: [.noSpecialCharacters]
-                )
-                
-                HStack {
-                    MyFormField(
-                        "Name",
-                        text: $fstEmployeeName,
-                        validationRules: [.noSpecialCharacters],
-                        inputRules: [.noSpecialCharacters]
-                    )
-                    .frame(width: 100)
-                    MyFormField(
-                        "Age",
-                        text: $fstEmployeeAge,
-                        validationRules: [.digitsOnly, .maxLength(2)],
-                        inputRules: [.digitsOnly, .maxLength(2)]
-                    )
-                    .frame(width: 60)
-                    MyFormField(
-                        "Email",
-                        text: $fstEmployeeEmail,
-                        validationRules: [.email]
-                    )
+            FormView {
+                ScrollView(.vertical) {
+                    FormField(
+                        value: $companyName,
+                        validationRules: [
+                            TextValidationRule.noSpecialCharacters
+                        ]
+                    ) { failedValidationRules in
+                        MyFormField(
+                            "Company",
+                            text: $companyName,
+                            failedValidationRules: failedValidationRules
+                        )
+                    }
+                    
+                    HStack {
+                        FormField(
+                            value: $fstEmployeeName,
+                            validationRules: [
+                                TextValidationRule.noSpecialCharacters
+                            ]
+                        ) { failedValidationRules in
+                            MyFormField(
+                                "Name",
+                                text: $fstEmployeeName,
+                                failedValidationRules: failedValidationRules
+                            )
+                            .frame(width: 100)
+                        }
+                        FormField(
+                            value: $fstEmployeeAge,
+                            validationRules: [
+                                TextValidationRule.digitsOnly,
+                                .maxLength(2)
+                            ]
+                        ) { failedValidationRules in
+                            MyFormField(
+                                "Age",
+                                text: $fstEmployeeAge,
+                                failedValidationRules: failedValidationRules
+                            )
+                            .frame(width: 60)
+                        }
+                        FormField(
+                            value: $fstEmployeeEmail,
+                            validationRules: [TextValidationRule.email]
+                        ) { failedValidationRules in
+                            MyFormField(
+                                "Email",
+                                text: $fstEmployeeEmail,
+                                failedValidationRules: failedValidationRules
+                            )
+                        }
+                    }
+                    
+                    HStack {
+                        Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                            .font(.system(size: 12))
+                        Spacer()
+                    }
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 8)
+                    
+                    VStack(spacing: 8) {
+                        FormField(
+                            value: $companyPhone,
+                            validationRules: [
+                                TextValidationRule.minLength(11),
+                                .maxLength(11),
+                                .digitsOnly
+                            ]
+                        ) { failedValidationRules in
+                            MyFormField(
+                                "Company phone",
+                                text: $companyPhone,
+                                failedValidationRules: failedValidationRules
+                            )
+                        }
+                        
+                        FormField(
+                            value: $pass,
+                            validationRules: [
+                                TextValidationRule.atLeastOneDigit,
+                                .atLeastOneLetter
+                            ]
+                        ) { failedValidationRules in
+                            SecureFormField(
+                                "Pass",
+                                text: $pass,
+                                failedValidationRules: failedValidationRules
+                            )
+                        }
+                        FormField(
+                            value: $confirmPass,
+                            validationRules: [
+                                TextValidationRule.atLeastOneDigit,
+                                .atLeastOneLetter,
+                                .equalTo(pass)
+                            ]
+                        ) { failedValidationRules in
+                            SecureFormField(
+                                "Confirm pass",
+                                text: $confirmPass,
+                                failedValidationRules: failedValidationRules
+                            )
+                        }
+                    }
                 }
-                
-                HStack {
-                    MyFormField(
-                        "Name",
-                        text: $sndEmployeeName,
-                        validationRules: [.noSpecialCharacters],
-                        inputRules: [.noSpecialCharacters]
-                    )
-                    .frame(width: 100)
-                    MyFormField(
-                        "Age",
-                        text: $sndEmployeeAge,
-                        validationRules: [.digitsOnly, .maxLength(2)],
-                        inputRules: [.digitsOnly, .maxLength(2)]
-                    )
-                    .frame(width: 60)
-                    MyFormField(
-                        "Email",
-                        text: $sndEmployeeEmail,
-                        validationRules: [.email]
-                    )
-                }
-                
-                HStack {
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
-                        .font(.system(size: 12))
-                    Spacer()
-                }
-                .padding(.horizontal, 4)
-                .padding(.bottom, 20)
-                
-                MyFormField(
-                    "Company phone",
-                    text: $companyPhone,
-                    validationRules: [.minLength(11), .maxLength(11), .digitsOnly],
-                    inputRules: [.maxLength(11), .digitsOnly]
-                )
-                
-                MySecondFormField(
-                    "Pass",
-                    text: $pass,
-                    validationRules: [.atLeastOneDigit, .atLeastOneLetter]
-                )
-                MySecondFormField(
-                    "Confirm pass",
-                    text: $confirmPass,
-                    validationRules: [.atLeastOneDigit, .atLeastOneLetter, .equalTo(pass)]
-                )
+                .padding(.horizontal, 12)
             }
-            .padding(.horizontal, 12)
-            .formView()
         }
     }
 }

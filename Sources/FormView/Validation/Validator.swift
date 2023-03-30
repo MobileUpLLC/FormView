@@ -12,7 +12,6 @@ final class Validator<T: Hashable, V: ValidationRule>: ObservableObject where T 
     @Binding private var bindValue: T
     private var bindFailedValidationRules: Binding<[V]>?
     private let validationRules: [V]
-    private let inputRules: [V]
     
     @Published var value: T {
         willSet { validate(newValue: newValue) }
@@ -22,11 +21,9 @@ final class Validator<T: Hashable, V: ValidationRule>: ObservableObject where T 
     init(
         value: Binding<T>,
         validationRules: [V],
-        inputRules: [V],
         failedValidationRules: Binding<[V]>? = nil
     ) {
         self.validationRules = validationRules
-        self.inputRules = inputRules
         self._bindValue = value
         self.bindFailedValidationRules = failedValidationRules
         self.value = value.wrappedValue
@@ -37,9 +34,5 @@ final class Validator<T: Hashable, V: ValidationRule>: ObservableObject where T 
             $0.check(value: newValue ?? value) == false
         }
         bindFailedValidationRules?.wrappedValue = failedValidationRules
-    }
-    
-    func validateInput(newValue: T? = nil) -> [V] {
-        return inputRules.filter { $0.check(value: newValue ?? value) == false }
     }
 }

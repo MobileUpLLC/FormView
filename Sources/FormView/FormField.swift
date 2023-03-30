@@ -11,31 +11,26 @@ public struct FormField<T: Hashable, V: ValidationRule, Content: View>: View whe
     
     @Binding private var bindValue: T
     private let validationRules: [V]
-    private let inputRules: [V]
-    private var bindFailedValidationRules: Binding<[V]>?
-    @ViewBuilder private let content: Content
+    @ViewBuilder private let content: ([V]) -> Content
+    
+    @State private var failedValidationRules: [V] = []
     
     public init(
         value: Binding<T>,
         validationRules: [V] = [],
-        inputRules: [V] = [],
-        failedValidationRules: Binding<[V]>? = nil,
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: @escaping ([V]) -> Content
     ) {
         self._bindValue = value
         self.validationRules = validationRules
-        self.inputRules = inputRules
-        self.bindFailedValidationRules = failedValidationRules
-        self.content = content()
+        self.content = content
     }
     
     public var body: some View {
-        content
+        content(failedValidationRules)
             .formField(
                 value: $bindValue,
                 validationRules: validationRules,
-                inputRules: inputRules,
-                failedValidationRules: bindFailedValidationRules
+                failedValidationRules: $failedValidationRules
             )
     }
 }

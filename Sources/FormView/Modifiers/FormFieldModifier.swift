@@ -11,18 +11,15 @@ struct FormFieldModifier<T: Hashable, V: ValidationRule>: ViewModifier where T =
     
     @Binding private var bindValue: T
     private let validationRules: [V]
-    private let inputRules: [V]
     private var bindFailedValidationRules: Binding<[V]>?
     
-    public init(
+    init(
         value: Binding<T>,
         validationRules: [V] = [],
-        inputRules: [V] = [],
         failedValidationRules: Binding<[V]>? = nil
     ) {
         self._bindValue = value
         self.validationRules = validationRules
-        self.inputRules = inputRules
         self.bindFailedValidationRules = failedValidationRules
     }
     
@@ -32,7 +29,6 @@ struct FormFieldModifier<T: Hashable, V: ValidationRule>: ViewModifier where T =
             .validateInput(
                 value: $bindValue,
                 validationRules: validationRules,
-                inputRules: inputRules,
                 failedValidationRules: bindFailedValidationRules
             )
     }
@@ -40,17 +36,15 @@ struct FormFieldModifier<T: Hashable, V: ValidationRule>: ViewModifier where T =
 
 extension View {
     
-    public func formField<T: Hashable, V: ValidationRule>(
+    func formField<T: Hashable, V: ValidationRule>(
         value: Binding<T>,
         validationRules: [V] = [],
-        inputRules: [V] = [],
         failedValidationRules: Binding<[V]>? = nil
     ) -> some View where T == V.Value {
         modifier(
             FormFieldModifier(
                 value: value,
                 validationRules: validationRules,
-                inputRules: inputRules,
                 failedValidationRules: failedValidationRules
             )
         )

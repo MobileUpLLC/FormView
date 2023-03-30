@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-public struct JumpOnSubmitModifier: ViewModifier {
+struct JumpOnSubmitModifier: ViewModifier {
     
     @Environment(\.focusField) var focusField
     
     private let id: String
     @FocusState private var isFocused: Bool
     
-    public init() {
+    init() {
         self.id = UUID().uuidString
     }
     
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content
             .onChange(of: focusField) { newValue in
                 isFocused = newValue.trimmingCharacters(in: .whitespaces) == id
@@ -33,7 +33,7 @@ public struct JumpOnSubmitModifier: ViewModifier {
 
 extension View {
     
-    public func jumpOnSubmit() -> some View {
+    func jumpOnSubmit() -> some View {
         modifier(JumpOnSubmitModifier())
     }
 }
