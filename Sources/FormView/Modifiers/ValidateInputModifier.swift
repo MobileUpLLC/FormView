@@ -7,16 +7,15 @@
 
 import SwiftUI
 
-struct ValidateInputModifier<T: Hashable, V: ValidationRule>: ViewModifier where T == V.Value {
-    
-    @ObservedObject private var validator: Validator<T, V>
+struct ValidateInputModifier<Value: Hashable, Rule: ValidationRule>: ViewModifier where Value == Rule.Value {
+    @ObservedObject private var validator: Validator<Value, Rule>
     
     @FocusState private var isFocused: Bool
     
     init(
-        value: Binding<T>,
-        validationRules: [V] = [],
-        failedValidationRules: Binding<[V]>? = nil
+        value: Binding<Value>,
+        validationRules: [Rule] = [],
+        failedValidationRules: Binding<[Rule]>? = nil
     ) {
         self.validator = Validator(
             value: value,
@@ -31,7 +30,7 @@ struct ValidateInputModifier<T: Hashable, V: ValidationRule>: ViewModifier where
                 validator.validate(newValue: newValue)
             }
             .focused($isFocused)
-            .onChange(of: isFocused) { newValue in
+            .onChange(of: isFocused) { _ in
                 validator.validate()
             }
             .onAppear {
@@ -41,12 +40,11 @@ struct ValidateInputModifier<T: Hashable, V: ValidationRule>: ViewModifier where
 }
 
 extension View {
-    
-    func validateInput<T: Hashable, V: ValidationRule>(
-        value: Binding<T>,
-        validationRules: [V] = [],
-        failedValidationRules: Binding<[V]>? = nil
-    ) -> some View where T == V.Value {
+    func validateInput<Value: Hashable, Rule: ValidationRule>(
+        value: Binding<Value>,
+        validationRules: [Rule] = [],
+        failedValidationRules: Binding<[Rule]>? = nil
+    ) -> some View where Value == Rule.Value {
         modifier(
             ValidateInputModifier(
                 value: value,

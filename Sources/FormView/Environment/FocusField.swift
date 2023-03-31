@@ -8,12 +8,10 @@
 import SwiftUI
 
 struct FocusFieldKey: EnvironmentKey {
-    
     static var defaultValue: String = ""
 }
 
 extension EnvironmentValues {
-    
     var focusField: String {
         get { self[FocusFieldKey.self] }
         set { self[FocusFieldKey.self] = newValue }

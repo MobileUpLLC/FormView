@@ -9,7 +9,6 @@ import SwiftUI
 import FormView
 
 struct MyFormField: View {
-    
     private let title: LocalizedStringKey
     private let text: Binding<String>
     private let failedValidationRules: [TextValidationRule]

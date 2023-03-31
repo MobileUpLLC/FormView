@@ -7,30 +7,32 @@
 
 import SwiftUI
 
-public struct FormField<T: Hashable, V: ValidationRule, Content: View>: View where T == V.Value {
+public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: View where Value == Rule.Value {
+    @Binding private var value: Value
+    private let validationRules: [Rule]
+    @ViewBuilder private let content: ([Rule]) -> Content
     
-    @Binding private var bindValue: T
-    private let validationRules: [V]
-    @ViewBuilder private let content: ([V]) -> Content
-    
-    @State private var failedValidationRules: [V] = []
+    @State private var failedValidationRules: [Rule] = []
     
     public init(
-        value: Binding<T>,
-        validationRules: [V] = [],
-        @ViewBuilder content: @escaping ([V]) -> Content
+        value: Binding<Value>,
+        validationRules: [Rule] = [],
+        @ViewBuilder content: @escaping ([Rule]) -> Content
     ) {
-        self._bindValue = value
+        self._value = value
         self.validationRules = validationRules
         self.content = content
     }
     
     public var body: some View {
         content(failedValidationRules)
-            .formField(
-                value: $bindValue,
-                validationRules: validationRules,
-                failedValidationRules: $failedValidationRules
+            .modifier(JumpOnSubmitModifier())
+            .modifier(
+                ValidateInputModifier(
+                    value: $value,
+                    validationRules: validationRules,
+                    failedValidationRules: $failedValidationRules
+                )
             )
     }
 }

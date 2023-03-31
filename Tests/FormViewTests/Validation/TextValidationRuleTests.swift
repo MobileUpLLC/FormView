@@ -9,7 +9,6 @@ import XCTest
 @testable import FormView
 
 final class TextValidationRuleTests: XCTestCase {
-    
     func testIgnoreEmpty() throws {
         try test(textRule: .digitsOnly, trueString: "", falseString: "1234 A")
     }

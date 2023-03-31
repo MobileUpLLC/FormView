@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct FormView<Content: View>: View {
+    @State private var fieldFocusStates: [FieldFocusState] = []
+    @State private var focusField: String = ""
     
     @ViewBuilder private let content: Content
     
@@ -17,6 +19,15 @@ public struct FormView<Content: View>: View {
     
     public var body: some View {
         content
-            .formView()
+            .onPreferenceChange(FieldFocusStatesKey.self) { newValue in
+                fieldFocusStates = newValue
+            }
+            .onSubmit(of: .text) {
+                focusField = FocusService.getNextFocusField(
+                    states: fieldFocusStates,
+                    currentFocusField: focusField
+                )
+            }
+            .environment(\.focusField, focusField)
     }
 }

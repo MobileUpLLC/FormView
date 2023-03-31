@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct FieldFocusState: Equatable {
-    
     var id: String
     var isFocused: Bool
 }
 
 struct FieldFocusStatesKey: PreferenceKey {
-    
     static var defaultValue: [FieldFocusState] = []
     
     static func reduce(value: inout [FieldFocusState], nextValue: () -> [FieldFocusState]) {

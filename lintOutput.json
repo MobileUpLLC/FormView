@@ -1,0 +1,11 @@
+[
+  {
+    "character" : 12,
+    "file" : "\/Users\/maxial\/Projects\/FormViewMobileUp\/Sources\/FormView\/Validation\/Rules\/TextValidationRule.swift",
+    "line" : 34,
+    "reason" : "Function should have complexity 8 or less; currently complexity is 16",
+    "rule_id" : "cyclomatic_complexity",
+    "severity" : "Error",
+    "type" : "Cyclomatic Complexity"
+  }
+]

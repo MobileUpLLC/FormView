@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct JumpOnSubmitModifier: ViewModifier {
-    
     @Environment(\.focusField) var focusField
     
     private let id: String
@@ -32,7 +31,6 @@ struct JumpOnSubmitModifier: ViewModifier {
 }
 
 extension View {
-    
     func jumpOnSubmit() -> some View {
         modifier(JumpOnSubmitModifier())
     }

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol ValidationRule: Equatable {
-    associatedtype Value: Hashable
+    associatedtype Value
     
     func check(value: Value) -> Bool
 }

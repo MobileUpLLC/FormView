@@ -8,9 +8,7 @@
 import Foundation
 
 public enum TextValidationRule: ValidationRule {
-    
     private enum Constants {
-        
         static let predicateFormat = "SELF MATCHES %@"
         static let specialCharactersRegex = ".*[^A-Za-zА-Яа-яё0-9 ].*"
         static let recurringPincodeRegex = "([0-9])\\1\\1\\1"

@@ -9,7 +9,6 @@ import SwiftUI
 import FormView
 
 struct SecureFormField: View {
-    
     private let title: LocalizedStringKey
     private let text: Binding<String>
     private let failedValidationRules: [TextValidationRule]
@@ -29,35 +28,45 @@ struct SecureFormField: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            ZStack {
-                Group {
-                    if isSecure {
-                        SecureField(title, text: text)
-                            .textContentType(.newPassword)
-                    } else {
-                        TextField(title, text: text)
-                    }
-                }
-                .focused($isFocused)
-                .background(Color.white)
-                
-                HStack {
-                    Spacer()
-                    Image(systemName: isSecure ? "eye" : "eye.slash")
-                        .onTapGesture {
-                            isSecure.toggle()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                isFocused = true
-                            }
-                        }
+            HStack {
+                fieldView
+                Spacer()
+                eyeImage
+            }
+            .background(Color.white)
+            messageView
+        }
+        .padding(.top, 6)
+    }
+    
+    private var fieldView: some View {
+        Group {
+            if isSecure {
+                SecureField(title, text: text)
+                    .textContentType(.newPassword)
+            } else {
+                TextField(title, text: text)
+            }
+        }
+        .focused($isFocused)
+    }
+    
+    private var eyeImage: some View {
+        Image(systemName: isSecure ? "eye" : "eye.slash")
+            .onTapGesture {
+                isSecure.toggle()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isFocused = true
                 }
             }
-            
-            if failedValidationRules.isEmpty == false {
-                Text(failedValidationRules.first?.message ?? .empty)
-                    .font(.system(size: 9, weight: .semibold))
-                    .foregroundColor(.red)
-            }
+    }
+    
+    @ViewBuilder
+    private var messageView: some View {
+        if failedValidationRules.isEmpty == false {
+            Text(failedValidationRules.first?.message ?? .empty)
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundColor(.red)
         }
     }
 }

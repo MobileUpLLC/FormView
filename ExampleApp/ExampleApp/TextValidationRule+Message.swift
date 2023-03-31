@@ -8,7 +8,6 @@
 import FormView
 
 extension TextValidationRule {
-    
     var message: String {
         switch self {
         case .notEmpty:

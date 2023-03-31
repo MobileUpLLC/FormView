@@ -8,13 +8,12 @@
 import Foundation
 
 extension String {
-    
     static let empty = ""
     static let space = " "
     static let comma = ","
     
     static func concat(strings: [String], delimeter: String = comma + space) -> String {
-        let strings = strings.filter { $0.count > 0 }
+        let strings = strings.filter { $0.isEmpty == false }
         
         var result: String = .empty
         

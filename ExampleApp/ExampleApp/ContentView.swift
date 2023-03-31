@@ -9,140 +9,91 @@ import SwiftUI
 import FormView
 
 struct ContentView: View {
-    
     @State var companyName: String = ""
-    
-    @State var fstEmployeeName: String = ""
-    @State var fstEmployeeAge: String = ""
-    @State var fstEmployeeEmail: String = ""
-    @State var sndEmployeeName: String = ""
-    @State var sndEmployeeAge: String = ""
-    @State var sndEmployeeEmail: String = ""
-    
+    @State var employeeName: String = ""
+    @State var employeeAge: String = ""
+    @State var employeeEmail: String = ""
     @State var companyPhone: String = ""
     @State var pass: String = ""
     @State var confirmPass: String = ""
     
+    private let nameRules: [TextValidationRule] = [.noSpecialCharacters]
+    private let ageRules: [TextValidationRule] = [.digitsOnly, .maxLength(2)]
+    private let emailRules: [TextValidationRule] = [.email]
+    private let phoneRules: [TextValidationRule] = [
+        .minLength(11),
+        .maxLength(11),
+        .digitsOnly
+    ]
+    private let passRules: [TextValidationRule] = [
+        .atLeastOneDigit,
+        .atLeastOneLetter
+    ]
+    
     var body: some View {
-        ZStack {
-            Color(red: 245/255.0, green: 246/255.0, blue: 250/255.0)
-                .ignoresSafeArea()
-            FormView {
-                ScrollView(.vertical) {
-                    FormField(
-                        value: $companyName,
-                        validationRules: [
-                            TextValidationRule.noSpecialCharacters
-                        ]
-                    ) { failedValidationRules in
-                        MyFormField(
-                            "Company",
-                            text: $companyName,
-                            failedValidationRules: failedValidationRules
-                        )
-                    }
-                    
-                    HStack {
-                        FormField(
-                            value: $fstEmployeeName,
-                            validationRules: [
-                                TextValidationRule.noSpecialCharacters
-                            ]
-                        ) { failedValidationRules in
-                            MyFormField(
-                                "Name",
-                                text: $fstEmployeeName,
-                                failedValidationRules: failedValidationRules
-                            )
-                            .frame(width: 100)
-                        }
-                        FormField(
-                            value: $fstEmployeeAge,
-                            validationRules: [
-                                TextValidationRule.digitsOnly,
-                                .maxLength(2)
-                            ]
-                        ) { failedValidationRules in
-                            MyFormField(
-                                "Age",
-                                text: $fstEmployeeAge,
-                                failedValidationRules: failedValidationRules
-                            )
-                            .frame(width: 60)
-                        }
-                        FormField(
-                            value: $fstEmployeeEmail,
-                            validationRules: [TextValidationRule.email]
-                        ) { failedValidationRules in
-                            MyFormField(
-                                "Email",
-                                text: $fstEmployeeEmail,
-                                failedValidationRules: failedValidationRules
-                            )
-                        }
-                    }
-                    
-                    HStack {
-                        Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
-                            .font(.system(size: 12))
-                        Spacer()
-                    }
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 8)
-                    
-                    VStack(spacing: 8) {
-                        FormField(
-                            value: $companyPhone,
-                            validationRules: [
-                                TextValidationRule.minLength(11),
-                                .maxLength(11),
-                                .digitsOnly
-                            ]
-                        ) { failedValidationRules in
-                            MyFormField(
-                                "Company phone",
-                                text: $companyPhone,
-                                failedValidationRules: failedValidationRules
-                            )
-                        }
-                        
-                        FormField(
-                            value: $pass,
-                            validationRules: [
-                                TextValidationRule.atLeastOneDigit,
-                                .atLeastOneLetter
-                            ]
-                        ) { failedValidationRules in
-                            SecureFormField(
-                                "Pass",
-                                text: $pass,
-                                failedValidationRules: failedValidationRules
-                            )
-                        }
-                        FormField(
-                            value: $confirmPass,
-                            validationRules: [
-                                TextValidationRule.atLeastOneDigit,
-                                .atLeastOneLetter,
-                                .equalTo(pass)
-                            ]
-                        ) { failedValidationRules in
-                            SecureFormField(
-                                "Confirm pass",
-                                text: $confirmPass,
-                                failedValidationRules: failedValidationRules
-                            )
-                        }
-                    }
-                }
-                .padding(.horizontal, 12)
+        FormView {
+            ScrollView(.vertical) {
+                formField("Company", value: $companyName, rules: nameRules)
+                formField("Name", value: $employeeName, rules: nameRules)
+                formField("Age", value: $employeeAge, rules: ageRules)
+                formField("Email", value: $employeeEmail, rules: emailRules)
+                formField("Company phone", value: $companyPhone, rules: phoneRules)
+                formField("Pass", value: $pass, rules: passRules, isSecure: true)
+                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
             }
+            .padding(.horizontal, 16)
+        }
+        .background(
+            Color(red: 245 / 255.0, green: 246 / 255.0, blue: 250 / 255.0)
+                .ignoresSafeArea()
+        )
+    }
+    
+    private func formField(
+        _ title: LocalizedStringKey,
+        value: Binding<String>,
+        rules: [TextValidationRule],
+        isSecure: Bool = false
+    ) -> some View {
+        FormField(
+            value: value,
+            validationRules: rules
+        ) { failedValidationRules in
+            fieldView(
+                title,
+                value: value,
+                rules: rules,
+                failedRules: failedValidationRules,
+                isSecure: isSecure
+            )
+        }
+    }
+    
+    @ViewBuilder
+    private func fieldView(
+        _ title: LocalizedStringKey,
+        value: Binding<String>,
+        rules: [TextValidationRule],
+        failedRules: [TextValidationRule],
+        isSecure: Bool
+    ) -> some View {
+        if isSecure {
+            SecureFormField(
+                title,
+                text: value,
+                failedValidationRules: failedRules
+            )
+        } else {
+            MyFormField(
+                title,
+                text: value,
+                failedValidationRules: failedRules
+            )
         }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
-    
     static var previews: some View {
         ContentView()
     }
