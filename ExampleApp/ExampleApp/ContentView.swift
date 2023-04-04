@@ -8,6 +8,12 @@
 import SwiftUI
 import FormView
 
+extension TextValidationRule {
+    static var newRule: Self {
+        TextValidationRule { _ in return false }
+    }
+}
+
 struct ContentView: View {
     @State var companyName: String = ""
     @State var employeeName: String = ""
@@ -17,7 +23,7 @@ struct ContentView: View {
     @State var pass: String = ""
     @State var confirmPass: String = ""
     
-    private let nameRules: [TextValidationRule] = [.noSpecialCharacters]
+    private let nameRules: [TextValidationRule] = [.noSpecialCharacters, .newRule]
     private let ageRules: [TextValidationRule] = [.digitsOnly, .maxLength(2)]
     private let emailRules: [TextValidationRule] = [.email]
     private let phoneRules: [TextValidationRule] = [

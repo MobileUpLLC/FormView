@@ -7,8 +7,9 @@
 
 import Foundation
 
-public protocol ValidationRule: Equatable {
+public protocol ValidationRule {
     associatedtype Value
     
+    init(_ checkClosure: @escaping (Value) -> Bool)
     func check(value: Value) -> Bool
 }

@@ -64,7 +64,8 @@ struct SecureFormField: View {
     @ViewBuilder
     private var messageView: some View {
         if failedValidationRules.isEmpty == false {
-            Text(failedValidationRules.first?.message ?? .empty)
+            Text("error")
+//            Text(failedValidationRules.first?.message ?? .empty)
                 .font(.system(size: 9, weight: .semibold))
                 .foregroundColor(.red)
         }

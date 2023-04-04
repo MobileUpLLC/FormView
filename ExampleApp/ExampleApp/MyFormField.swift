@@ -28,7 +28,7 @@ struct MyFormField: View {
             TextField(title, text: text)
                 .background(Color.white)
             if failedValidationRules.isEmpty == false {
-                Text(String.concat(strings: failedValidationRules.map { $0.message }))
+                Text(String.concat(strings: failedValidationRules.map {_ in "error" }))
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundColor(.red)
             }
