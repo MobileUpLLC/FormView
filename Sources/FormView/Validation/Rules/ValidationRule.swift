@@ -7,9 +7,16 @@
 
 import Foundation
 
-public protocol ValidationRule {
+public protocol ValidationRule: Equatable {
     associatedtype Value
     
-    init(_ checkClosure: @escaping (Value) -> Bool)
+    var id: UUID { get }
+    
     func check(value: Value) -> Bool
+}
+
+extension ValidationRule {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

@@ -28,10 +28,12 @@ struct MyFormField: View {
             TextField(title, text: text)
                 .background(Color.white)
             if failedValidationRules.isEmpty == false {
-                Text(String.concat(strings: failedValidationRules.map {_ in "error" }))
+                Text(failedValidationRules.first?.getErrorMessage() ?? "failed")
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundColor(.red)
             }
         }
     }
 }
+
+

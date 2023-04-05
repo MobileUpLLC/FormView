@@ -14,6 +14,8 @@ extension TextValidationRule {
     }
 }
 
+
+
 struct ContentView: View {
     @State var companyName: String = ""
     @State var employeeName: String = ""

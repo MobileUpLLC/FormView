@@ -8,12 +8,13 @@
 import Foundation
 
 public struct TextValidationRule: ValidationRule {
-    public let checkClosure: (String) -> Bool
+    private let checkClosure: (String) -> Bool
+    public let id: UUID = UUID()
     
     public init(_ checkClosure: @escaping (String) -> Bool) {
         self.checkClosure = checkClosure
     }
-
+    
     public func check(value: String) -> Bool {
         return checkClosure(value)
     }
@@ -23,18 +24,6 @@ extension TextValidationRule {
     public static var notEmpty: Self {
         TextValidationRule {
             $0.isEmpty == false
-        }
-    }
-    
-    public static func minLength(_ count: Int) -> Self {
-        TextValidationRule {
-            $0.count >= count
-        }
-    }
-    
-    public static func maxLength(_ count: Int) -> Self {
-        TextValidationRule {
-            $0.count <= count
         }
     }
     
@@ -98,6 +87,18 @@ extension TextValidationRule {
     public static var notRecurringPincode: Self {
         TextValidationRule {
             $0.range(of: "([0-9])\\1\\1\\1", options: .regularExpression) == nil
+        }
+    }
+    
+    public static func minLength(_ count: Int) -> Self {
+        TextValidationRule {
+            $0.count >= count
+        }
+    }
+    
+    public static func maxLength(_ count: Int) -> Self {
+        TextValidationRule {
+            $0.count <= count
         }
     }
     
