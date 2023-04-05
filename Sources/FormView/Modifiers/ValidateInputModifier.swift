@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-struct ValidateInputModifier<Value: Hashable, Rule: ValidationRule>: ViewModifier where Value == Rule.Value {
+struct ValidateInputModifier<Value: Equatable, Rule: ValidationRule>: ViewModifier where Value == Rule.Value {
     @ObservedObject private var validator: Validator<Value, Rule>
-    
     @FocusState private var isFocused: Bool
+    @Binding private var value: Value
     
     init(
         value: Binding<Value>,
         validationRules: [Rule] = [],
         failedValidationRules: Binding<[Rule]>? = nil
     ) {
+        self._value = value
         self.validator = Validator(
-            value: value,
             validationRules: validationRules,
             failedValidationRules: failedValidationRules
         )
@@ -26,21 +26,21 @@ struct ValidateInputModifier<Value: Hashable, Rule: ValidationRule>: ViewModifie
     
     func body(content: Content) -> some View {
         content
-            .onChange(of: validator.value) { newValue in
-                validator.validate(newValue: newValue)
+            .onChange(of: value) { newValue in
+                validator.validate(value: newValue)
             }
             .focused($isFocused)
             .onChange(of: isFocused) { _ in
-                validator.validate()
+                validator.validate(value: value)
             }
             .onAppear {
-                validator.validate()
+                validator.validate(value: value)
             }
     }
 }
 
 extension View {
-    func validateInput<Value: Hashable, Rule: ValidationRule>(
+    func validateInput<Value: Equatable, Rule: ValidationRule>(
         value: Binding<Value>,
         validationRules: [Rule] = [],
         failedValidationRules: Binding<[Rule]>? = nil

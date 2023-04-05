@@ -16,6 +16,9 @@ public struct TextValidationRule: ValidationRule {
     }
     
     public func check(value: String) -> Bool {
+        guard value.isEmpty == false else {
+            return true
+        }
         return checkClosure(value)
     }
 }

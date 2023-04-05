@@ -7,30 +7,21 @@
 
 import SwiftUI
 
-final class Validator<Value: Hashable, Rule: ValidationRule>: ObservableObject where Value == Rule.Value {
-    @Binding private var bindValue: Value
-    private var bindFailedValidationRules: Binding<[Rule]>?
+final class Validator<Value: Equatable, Rule: ValidationRule>: ObservableObject where Value == Rule.Value {
     private let validationRules: [Rule]
-    
-    @Published var value: Value {
-        willSet { validate(newValue: newValue) }
-        didSet { bindValue = value }
-    }
+    private var bindFailedValidationRules: Binding<[Rule]>?
     
     init(
-        value: Binding<Value>,
         validationRules: [Rule],
         failedValidationRules: Binding<[Rule]>? = nil
     ) {
         self.validationRules = validationRules
-        self._bindValue = value
         self.bindFailedValidationRules = failedValidationRules
-        self.value = value.wrappedValue
     }
     
-    func validate(newValue: Value? = nil) {
+    func validate(value: Value) {
         let failedValidationRules = validationRules.filter {
-            $0.check(value: newValue ?? value) == false
+            $0.check(value: value) == false
         }
         bindFailedValidationRules?.wrappedValue = failedValidationRules
     }
