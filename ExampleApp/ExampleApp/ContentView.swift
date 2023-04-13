@@ -8,12 +8,6 @@
 import SwiftUI
 import FormView
 
-extension TextValidationRule {
-    static var newRule: Self {
-        TextValidationRule { _ in return false }
-    }
-}
-
 struct ContentView: View {
     @State var companyName: String = ""
     @State var employeeName: String = ""

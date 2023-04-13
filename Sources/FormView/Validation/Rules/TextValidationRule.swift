@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TextValidationRule: ValidationRule {
+public struct TextValidationRule: ValidationRule, Equatable {
     private let checkClosure: (String) -> Bool
     public let id: UUID = UUID()
     
@@ -20,6 +20,12 @@ public struct TextValidationRule: ValidationRule {
             return true
         }
         return checkClosure(value)
+    }
+}
+
+extension TextValidationRule {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

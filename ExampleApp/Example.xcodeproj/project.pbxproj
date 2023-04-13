@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4211F22E2999730F00D13FD0 /* MyFormField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4211F22D2999730F00D13FD0 /* MyFormField.swift */; };
 		426A30D129DDC64F00C5FB02 /* TextValidationRule+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A30D029DDC64F00C5FB02 /* TextValidationRule+Error.swift */; };
+		426A30E529E81D5A00C5FB02 /* TextValidationRule+NewRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426A30E429E81D5A00C5FB02 /* TextValidationRule+NewRule.swift */; };
 		426CF63829850D1A00012FBE /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CF63729850D1A00012FBE /* ExampleApp.swift */; };
 		426CF63A29850D1A00012FBE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426CF63929850D1A00012FBE /* ContentView.swift */; };
 		426CF63C29850D1B00012FBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 426CF63B29850D1B00012FBE /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		4211F22D2999730F00D13FD0 /* MyFormField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFormField.swift; sourceTree = "<group>"; };
 		426A30D029DDC64F00C5FB02 /* TextValidationRule+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextValidationRule+Error.swift"; sourceTree = "<group>"; };
+		426A30E429E81D5A00C5FB02 /* TextValidationRule+NewRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextValidationRule+NewRule.swift"; sourceTree = "<group>"; };
 		426CF63429850D1A00012FBE /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		426CF63729850D1A00012FBE /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
 		426CF63929850D1A00012FBE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				4211F22D2999730F00D13FD0 /* MyFormField.swift */,
 				42F7D96429D410370043D694 /* SecureFormField.swift */,
 				426A30D029DDC64F00C5FB02 /* TextValidationRule+Error.swift */,
+				426A30E429E81D5A00C5FB02 /* TextValidationRule+NewRule.swift */,
 				426CF63B29850D1B00012FBE /* Assets.xcassets */,
 				426CF63D29850D1B00012FBE /* Preview Content */,
 			);
@@ -173,6 +176,7 @@
 			files = (
 				4211F22E2999730F00D13FD0 /* MyFormField.swift in Sources */,
 				426A30D129DDC64F00C5FB02 /* TextValidationRule+Error.swift in Sources */,
+				426A30E529E81D5A00C5FB02 /* TextValidationRule+NewRule.swift in Sources */,
 				426CF63A29850D1A00012FBE /* ContentView.swift in Sources */,
 				42F7D96529D410370043D694 /* SecureFormField.swift in Sources */,
 				426CF63829850D1A00012FBE /* ExampleApp.swift in Sources */,
