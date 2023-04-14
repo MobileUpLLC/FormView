@@ -10,7 +10,6 @@ import XCTest
 @testable import FormView
 
 final class ValidatorTests: XCTestCase {
-    
     func testValidator() throws {
         var text: String = ""
         var failedValidationRules: [TextValidationRule] = []

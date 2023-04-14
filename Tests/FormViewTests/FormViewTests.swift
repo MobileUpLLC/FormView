@@ -12,7 +12,6 @@ import Combine
 @testable import FormView
 
 final class FormViewTests: XCTestCase {
-    
     func testPreventInvalidInput() throws {
         var text1 = ""
         var text2 = ""
@@ -20,14 +19,11 @@ final class FormViewTests: XCTestCase {
             wrapped: FormView {
                 ScrollView {
                     FormField(
-                        text: Binding(get: { text1 }, set: { text1 = $0 }),
-                        validationRules: [.digitsOnly],
-                        inputRules: [.digitsOnly]
+                        value: Binding(get: { text1 }, set: { text1 = $0 }),
+                        validationRules: [.digitsOnly]
                     )
                     .id(1)
-                    FormField(
-                        text: Binding(get: { text2 }, set: { text2 = $0 })
-                    )
+                    FormField(value: Binding(get: { text2 }, set: { text2 = $0 }))
                     .id(2)
                 }
             }
@@ -58,14 +54,11 @@ final class FormViewTests: XCTestCase {
             wrapped: FormView {
                 ScrollView {
                     FormField(
-                        text: Binding(get: { text1 }, set: { text1 = $0 }),
-                        validationRules: [.digitsOnly],
-                        inputRules: [.digitsOnly]
+                        value: Binding(get: { text1 }, set: { text1 = $0 }),
+                        validationRules: [.digitsOnly]
                     )
                     .id(1)
-                    FormField(
-                        text: Binding(get: { text2 }, set: { text2 = $0 })
-                    )
+                    FormField(value: Binding(get: { text2 }, set: { text2 = $0 }))
                     .id(2)
                 }
             }

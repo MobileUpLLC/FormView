@@ -10,7 +10,6 @@ import ViewInspector
 @testable import FormView
 
 final class Inspection<V> {
-    
     let notice = PassthroughSubject<UInt, Never>()
     var callbacks: [UInt: (V) -> Void] = [:]
     

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct InspectionWrapperView<V: View>: View {
-    
     let inspection = Inspection<Self>()
     var wrapped: V
     

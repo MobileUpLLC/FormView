@@ -7,123 +7,122 @@
 
 import Foundation
 
-public enum TextValidationRule: ValidationRule {
+public struct TextValidationRule: ValidationRule, Equatable {
+    private let checkClosure: (String) -> Bool
+    public let id: UUID = UUID()
     
-    private enum Constants {
-        
-        static let predicateFormat = "SELF MATCHES %@"
-        static let specialCharactersRegex = ".*[^A-Za-zА-Яа-яё0-9 ].*"
-        static let recurringPincodeRegex = "([0-9])\\1\\1\\1"
-        static let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+    public init(_ checkClosure: @escaping (String) -> Bool) {
+        self.checkClosure = checkClosure
     }
-    
-    case notEmpty
-    case minLength(Int)
-    case maxLength(Int)
-    case atLeastOneDigit
-    case atLeastOneLetter
-    case digitsOnly
-    case lettersOnly
-    case atLeastOneLowercaseLetter
-    case atLeastOneUppercaseLetter
-    case atLeastOneSpecialCharacter
-    case noSpecialCharacters
-    case email
-    case notRecurringPincode
-    case regex(String)
     
     public func check(value: String) -> Bool {
-        guard value.isEmpty == false || self == .notEmpty else {
+        guard value.isEmpty == false else {
             return true
         }
-        
-        switch self {
-        case .notEmpty:
-            return checkNotEmpty(value)
-        case .minLength(let count):
-            return checkMinLength(value, count: count)
-        case .maxLength(let count):
-            return checkMaxLength(value, count: count)
-        case .atLeastOneDigit:
-            return checkAtLeastOneDigit(value)
-        case .atLeastOneLetter:
-            return checkAtLeastOneLetter(value)
-        case .digitsOnly:
-            return checkDigitsOnly(value)
-        case .lettersOnly:
-            return checkLettersOnly(value)
-        case .atLeastOneLowercaseLetter:
-            return checkAtLeastOneLowercaseLetter(value)
-        case .atLeastOneUppercaseLetter:
-            return checkAtLeastOneUppercaseLetter(value)
-        case .atLeastOneSpecialCharacter:
-            return checkAtLeastOneSpecialCharacter(value)
-        case .noSpecialCharacters:
-            return checkNoSpecialCharacters(value)
-        case .email:
-            return checkEmail(value)
-        case .notRecurringPincode:
-            return checkNotRecurringPincode(value)
-        case .regex(let regex):
-            return checkRegex(value, regex: regex)
+        return checkClosure(value)
+    }
+}
+
+extension TextValidationRule {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+extension TextValidationRule {
+    public static var notEmpty: Self {
+        TextValidationRule {
+            $0.isEmpty == false
         }
     }
     
-    private func checkNotEmpty(_ value: String) -> Bool {
-        return value.isEmpty == false
+    public static var atLeastOneLowercaseLetter: Self {
+        TextValidationRule {
+            $0.rangeOfCharacter(from: CharacterSet.lowercaseLetters) != nil
+        }
     }
     
-    private func checkMinLength(_ value: String, count: Int) -> Bool {
-        return value.count >= count
+    public static var atLeastOneUppercaseLetter: Self {
+        TextValidationRule {
+            $0.rangeOfCharacter(from: CharacterSet.uppercaseLetters) != nil
+        }
     }
     
-    private func checkMaxLength(_ value: String, count: Int) -> Bool {
-        return value.count <= count
+    public static var atLeastOneDigit: Self {
+        TextValidationRule {
+            $0.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil
+        }
     }
     
-    private func checkAtLeastOneLowercaseLetter(_ value: String) -> Bool {
-        return value.rangeOfCharacter(from: CharacterSet.lowercaseLetters) != nil
+    public static var atLeastOneLetter: Self {
+        TextValidationRule {
+            $0.rangeOfCharacter(from: CharacterSet.letters) != nil
+        }
     }
     
-    private func checkAtLeastOneUppercaseLetter(_ value: String) -> Bool {
-        return value.rangeOfCharacter(from: CharacterSet.uppercaseLetters) != nil
+    public static var digitsOnly: Self {
+        TextValidationRule {
+            CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: $0))
+        }
     }
     
-    private func checkAtLeastOneDigit(_ value: String) -> Bool {
-        return value.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil
+    public static var lettersOnly: Self {
+        TextValidationRule {
+            CharacterSet.letters.isSuperset(of: CharacterSet(charactersIn: $0))
+        }
     }
     
-    private func checkAtLeastOneLetter(_ value: String) -> Bool {
-        return value.rangeOfCharacter(from: CharacterSet.letters) != nil
+    public static var atLeastOneSpecialCharacter: Self {
+        TextValidationRule {
+            $0.range(of: ".*[^A-Za-zА-Яа-яё0-9 ].*", options: .regularExpression) != nil
+        }
     }
     
-    private func checkDigitsOnly(_ value: String) -> Bool {
-        return CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: value))
+    public static var noSpecialCharacters: Self {
+        TextValidationRule {
+            $0.range(of: ".*[^A-Za-zА-Яа-яё0-9 ].*", options: .regularExpression) == nil
+        }
     }
     
-    private func checkLettersOnly(_ value: String) -> Bool {
-        return CharacterSet.letters.isSuperset(of: CharacterSet(charactersIn: value))
+    public static var email: Self {
+        TextValidationRule {
+            NSPredicate(
+                format: "SELF MATCHES %@",
+                "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+            ).evaluate(with: $0)
+        }
     }
     
-    private func checkAtLeastOneSpecialCharacter(_ value: String) -> Bool {
-        return value.range(of: Constants.specialCharactersRegex, options: .regularExpression) != nil
+    public static var notRecurringPincode: Self {
+        TextValidationRule {
+            $0.range(of: "([0-9])\\1\\1\\1", options: .regularExpression) == nil
+        }
     }
     
-    private func checkNoSpecialCharacters(_ value: String) -> Bool {
-        return value.range(of: Constants.specialCharactersRegex, options: .regularExpression) == nil
+    public static func minLength(_ count: Int) -> Self {
+        TextValidationRule {
+            $0.count >= count
+        }
     }
     
-    private func checkEmail(_ value: String) -> Bool {
-        let emailPredicate = NSPredicate(format: Constants.predicateFormat, Constants.emailRegex)
-        return emailPredicate.evaluate(with: value)
+    public static func maxLength(_ count: Int) -> Self {
+        TextValidationRule {
+            $0.count <= count
+        }
     }
     
-    private func checkNotRecurringPincode(_ value: String) -> Bool {
-        return value.range(of: Constants.recurringPincodeRegex, options: .regularExpression) == nil
+    public static func regex(_ regex: String) -> Self {
+        TextValidationRule {
+            NSPredicate(
+                format: "SELF MATCHES %@",
+                regex
+            ).evaluate(with: $0)
+        }
     }
     
-    private func checkRegex(_ value: String, regex: String) -> Bool {
-        let predicate = NSPredicate(format: Constants.predicateFormat, regex)
-        return predicate.evaluate(with: value)
+    public static func equalTo(_ string: String) -> Self {
+        TextValidationRule {
+            $0 == string
+        }
     }
 }
