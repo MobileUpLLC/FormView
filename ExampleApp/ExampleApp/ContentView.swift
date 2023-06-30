@@ -17,7 +17,7 @@ struct ContentView: View {
     @State var pass: String = ""
     @State var confirmPass: String = ""
     
-    private let nameRules: [TextValidationRule] = [.noSpecialCharacters, .newRule]
+    private let nameRules: [TextValidationRule] = [.noSpecialCharacters, .newRule, .notEmpty]
     private let ageRules: [TextValidationRule] = [.digitsOnly, .maxLength(2)]
     private let emailRules: [TextValidationRule] = [.email]
     private let phoneRules: [TextValidationRule] = [
@@ -30,16 +30,21 @@ struct ContentView: View {
         .atLeastOneLetter
     ]
     
+    private let formValidator = FormValidator()
+    
     var body: some View {
-        FormView {
+        FormView(validator: formValidator) {
             ScrollView(.vertical) {
                 formField("Company", value: $companyName, rules: nameRules)
                 formField("Name", value: $employeeName, rules: nameRules)
                 formField("Age", value: $employeeAge, rules: ageRules)
-                formField("Email", value: $employeeEmail, rules: emailRules)
-                formField("Company phone", value: $companyPhone, rules: phoneRules)
-                formField("Pass", value: $pass, rules: passRules, isSecure: true)
-                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
+//                formField("Email", value: $employeeEmail, rules: emailRules)
+//                formField("Company phone", value: $companyPhone, rules: phoneRules)
+//                formField("Pass", value: $pass, rules: passRules, isSecure: true)
+//                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
+                Button("Validate") {
+                    print("Form is valid: \(formValidator.validate())")
+                }
             }
             .padding(.horizontal, 16)
         }

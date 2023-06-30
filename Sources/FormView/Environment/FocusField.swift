@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct FocusFieldKey: EnvironmentKey {
+private struct FocusedFieldIdKey: EnvironmentKey {
     static var defaultValue: String = ""
 }
 
 extension EnvironmentValues {
-    var focusField: String {
-        get { self[FocusFieldKey.self] }
-        set { self[FocusFieldKey.self] = newValue }
+    var focusedFieldId: String {
+        get { self[FocusedFieldIdKey.self] }
+        set { self[FocusedFieldIdKey.self] = newValue }
     }
 }
