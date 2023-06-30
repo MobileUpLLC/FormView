@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ErrorHideBehaviour {
+public enum ErrorHideBehaviour {
     case onValueChanged
     case onFocus
     case onFocusLost

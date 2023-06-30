@@ -30,10 +30,6 @@ final class FieldValidator<Value: Equatable, Rule: ValidationRule>: ObservableOb
         
         return failedValidationRules
     }
-    
-//    func reset() {
-//        bindFailedValidationRules?.wrappedValue = []
-//    }
 }
 
 

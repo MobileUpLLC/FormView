@@ -30,10 +30,12 @@ struct ContentView: View {
         .atLeastOneLetter
     ]
     
-    private let formValidator = FormValidator()
     
     var body: some View {
-        FormView(validator: formValidator) {
+        FormView(
+            validationBehaviour: .onFieldFocusLost,
+            errorHideBehaviour: .onValueChanged
+        ) { validator in
             ScrollView(.vertical) {
                 formField("Company", value: $companyName, rules: nameRules)
                 formField("Name", value: $employeeName, rules: nameRules)
@@ -43,7 +45,7 @@ struct ContentView: View {
 //                formField("Pass", value: $pass, rules: passRules, isSecure: true)
 //                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
                 Button("Validate") {
-                    print("Form is valid: \(formValidator.validate())")
+                    print("Form is valid: \(validator.validate(focusOnFirstFailedField: true))")
                 }
             }
             .padding(.horizontal, 16)

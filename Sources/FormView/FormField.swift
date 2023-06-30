@@ -13,15 +13,15 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     
     @State private var failedValidationRules: [Rule] = []
     
-    // JumpOnSubmit
+    // Fields Focus
     @FocusState private var isFocused: Bool
     private let id: String = UUID().uuidString
     @Environment(\.focusedFieldId) var currentFocusedFieldId
     
     // ValidateInput
     private let validator: FieldValidator2<Value, Rule>
-    private let errorHideBehaviour: ErrorHideBehaviour = .onValueChanged
-    private let validationBehaviour: ValidationBehaviour = .onFieldFocusLost
+    @Environment(\.errorHideBehaviour) var errorHideBehaviour
+    @Environment(\.validationBehaviour) var validationBehaviour
     
     public init(
         value: Binding<Value>,
