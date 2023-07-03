@@ -1,5 +1,5 @@
 //
-//  SecureFormField.swift
+//  SecureInputField.swift
 //  Example
 //
 //  Created by Maxim Aliev on 29.03.2023.
@@ -8,23 +8,13 @@
 import SwiftUI
 import FormView
 
-struct SecureFormField: View {
-    private let title: LocalizedStringKey
-    private let text: Binding<String>
-    private let failedValidationRules: [TextValidationRule]
+struct SecureInputField: View {
+    let title: LocalizedStringKey
+    let text: Binding<String>
+    let failedRules: [TextValidationRule]
     
     @FocusState private var isFocused: Bool
     @State private var isSecure = true
-    
-    init(
-        _ title: LocalizedStringKey = "",
-        text: Binding<String>,
-        failedValidationRules: [TextValidationRule] = []
-    ) {
-        self.title = title
-        self.text = text
-        self.failedValidationRules = failedValidationRules
-    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -35,8 +25,9 @@ struct SecureFormField: View {
             }
             .background(Color.white)
             messageView
+            Spacer()
         }
-        .padding(.top, 6)
+        .frame(height: 40)
     }
     
     private var fieldView: some View {
@@ -63,8 +54,8 @@ struct SecureFormField: View {
     
     @ViewBuilder
     private var messageView: some View {
-        if failedValidationRules.isEmpty == false {
-            Text(failedValidationRules.first?.getErrorMessage() ?? "failed")
+        if failedRules.isEmpty == false {
+            Text(failedRules.first?.getErrorMessage() ?? "failed")
                 .font(.system(size: 9, weight: .semibold))
                 .foregroundColor(.red)
         }
