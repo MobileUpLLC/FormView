@@ -19,7 +19,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     @Environment(\.focusedFieldId) var currentFocusedFieldId
     
     // ValidateInput
-    private let validator: FieldValidator2<Value, Rule>
+    private let validator: FieldValidator<Value, Rule>
     @Environment(\.errorHideBehaviour) var errorHideBehaviour
     @Environment(\.validationBehaviour) var validationBehaviour
     
@@ -30,7 +30,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     ) {
         self._value = value
         self.content = content
-        self.validator = FieldValidator2(validationRules: validationRules)
+        self.validator = FieldValidator(rules: validationRules)
     }
     
     public var body: some View {
@@ -42,10 +42,10 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
                 }
             }
             .preference(
-                key: FieldFocusStatesKey.self,
+                key: FieldStatesKey.self,
                 value: [
                     // Замыкание вызывается FormValidator'ом из FormView для валидации по требованию
-                    FieldFocusState(id: id, isFocused: isFocused) {
+                    FieldState(id: id, isFocused: isFocused) {
                         let failedRules = validator.validate(value: value)
                         print("Failed rules \(failedRules.count) for id: \(id)")
                         

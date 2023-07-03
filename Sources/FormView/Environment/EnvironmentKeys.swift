@@ -8,7 +8,7 @@
 import SwiftUI
 
 private struct FocusedFieldIdKey: EnvironmentKey {
-    static var defaultValue: String = ""
+    static var defaultValue: String = .empty
 }
 
 extension EnvironmentValues {

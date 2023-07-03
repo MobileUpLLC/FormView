@@ -13,26 +13,15 @@ public enum ValidationBehaviour {
     case never
 }
 
-public class FormValidator {
-    var onValidateRun: ((Bool) -> Bool)?
-    
-    public init() {
-        onValidateRun = nil
-    }
-    
-    public func validate(focusOnFirstFailedField: Bool = true) -> Bool {
-        guard let onValidateRun else {
-            assertionFailure("onValidateRun closure not found")
-            return false
-        }
-        
-        return onValidateRun(focusOnFirstFailedField)
-    }
+public enum ErrorHideBehaviour {
+    case onValueChanged
+    case onFocus
+    case onFocusLost
 }
 
 public struct FormView<Content: View>: View {
-    @State private var fieldFocusStates: [FieldFocusState] = []
-    @State private var currentFocusedFieldId: String = ""
+    @State private var fieldStates: [FieldState] = .empty
+    @State private var currentFocusedFieldId: String = .empty
     
     @ViewBuilder private let content: Content
     
@@ -41,40 +30,38 @@ public struct FormView<Content: View>: View {
     private let validationBehaviour: ValidationBehaviour
     
     public init(
-        validationBehaviour: ValidationBehaviour = .never,
-        errorHideBehaviour: ErrorHideBehaviour = .onValueChanged,
+        validate: ValidationBehaviour = .never,
+        hideError: ErrorHideBehaviour = .onValueChanged,
         @ViewBuilder content: (FormValidator) -> Content
     ) {
         self.content = content(formValidator)
-        self.errorHideBehaviour = errorHideBehaviour
-        self.validationBehaviour = validationBehaviour
+        self.validationBehaviour = validate
+        self.errorHideBehaviour = hideError
     }
     
     public var body: some View {
         content
-            .onPreferenceChange(FieldFocusStatesKey.self) { newValue in
-                fieldFocusStates = newValue
+            .onPreferenceChange(FieldStatesKey.self) { newValue in
+                fieldStates = newValue
                 
                 let focusedField = newValue.first { $0.isFocused }
-                currentFocusedFieldId = focusedField?.id ?? ""
+                currentFocusedFieldId = focusedField?.id ?? .empty
                
-                // Замыкание вызывается методом validate() FormValidator'a.
+                // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
                 formValidator.onValidateRun = { focusOnFirstFailedField in
                     let resutls = newValue.map { $0.akk() }
                    
                     // Фокус на первом зафейленом филде.
                     if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
-                        currentFocusedFieldId = fieldFocusStates[index].id
+                        currentFocusedFieldId = fieldStates[index].id
                     }
                         
-                    let isValid = resutls.reduce(into: true) { $0 = $0 && $1 }
-                   
-                    return isValid
+                    return resutls.reduce(into: true) { $0 = $0 && $1 }
                 }
             }
             .onSubmit(of: .text) {
                 currentFocusedFieldId = FocusService.getNextFocusFieldId(
-                    states: fieldFocusStates,
+                    states: fieldStates,
                     currentFocusField: currentFocusedFieldId
                 )
             }
@@ -82,4 +69,8 @@ public struct FormView<Content: View>: View {
             .environment(\.errorHideBehaviour, errorHideBehaviour)
             .environment(\.validationBehaviour, validationBehaviour)
     }
+}
+
+extension String {
+    static var empty: String { "" }
 }

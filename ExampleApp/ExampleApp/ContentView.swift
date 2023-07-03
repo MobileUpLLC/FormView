@@ -33,19 +33,19 @@ struct ContentView: View {
     
     var body: some View {
         FormView(
-            validationBehaviour: .onFieldFocusLost,
-            errorHideBehaviour: .onValueChanged
-        ) { validator in
+            validate: .never,
+            hideError: .onValueChanged
+        ) { proxy in
             ScrollView(.vertical) {
                 formField("Company", value: $companyName, rules: nameRules)
                 formField("Name", value: $employeeName, rules: nameRules)
                 formField("Age", value: $employeeAge, rules: ageRules)
-//                formField("Email", value: $employeeEmail, rules: emailRules)
-//                formField("Company phone", value: $companyPhone, rules: phoneRules)
-//                formField("Pass", value: $pass, rules: passRules, isSecure: true)
-//                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
+                formField("Email", value: $employeeEmail, rules: emailRules)
+                formField("Company phone", value: $companyPhone, rules: phoneRules)
+                formField("Pass", value: $pass, rules: passRules, isSecure: true)
+                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
                 Button("Validate") {
-                    print("Form is valid: \(validator.validate(focusOnFirstFailedField: true))")
+                    print("Form is valid: \(proxy.validate(focusOnFirstFailedField: true))")
                 }
             }
             .padding(.horizontal, 16)
