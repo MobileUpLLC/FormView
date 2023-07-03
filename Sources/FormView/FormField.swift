@@ -47,8 +47,6 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
                     // Замыкание для каждого филда вызывается FormValidator'ом из FormView для валидации по требованию
                     FieldState(id: id, isFocused: isFocused) {
                         let failedRules = validator.validate(value: value)
-                        print("Failed rules \(failedRules.count) for id: \(id)")
-                        
                         failedValidationRules = failedRules
                         
                         return failedRules.isEmpty

@@ -18,13 +18,13 @@ struct TextInputField: View {
             TextField(title, text: text)
                 .background(Color.white)
             if failedRules.isEmpty == false {
-                Text(failedRules.first?.getErrorMessage() ?? "failed")
-                    .font(.system(size: 9, weight: .semibold))
+                Text(failedRules[0].getErrorMessage())
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.red)
             }
             Spacer()
         }
-        .frame(height: 40)
+        .frame(height: 50)
     }
 }
 

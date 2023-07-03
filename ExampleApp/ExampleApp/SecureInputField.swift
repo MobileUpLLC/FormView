@@ -24,10 +24,14 @@ struct SecureInputField: View {
                 eyeImage
             }
             .background(Color.white)
-            messageView
+            if failedRules.isEmpty == false {
+                Text(failedRules[0].getErrorMessage())
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(.red)
+            }
             Spacer()
         }
-        .frame(height: 40)
+        .frame(height: 50)
     }
     
     private var fieldView: some View {
@@ -50,14 +54,5 @@ struct SecureInputField: View {
                     isFocused = true
                 }
             }
-    }
-    
-    @ViewBuilder
-    private var messageView: some View {
-        if failedRules.isEmpty == false {
-            Text(failedRules.first?.getErrorMessage() ?? "failed")
-                .font(.system(size: 9, weight: .semibold))
-                .foregroundColor(.red)
-        }
     }
 }

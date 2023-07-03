@@ -16,7 +16,7 @@ struct ContentView: View {
     
     var body: some View {
         FormView(
-            validate: .never,
+            validate: .onFieldFocusLost,
             hideError: .onValueChanged
         ) { proxy in
             ScrollView(.vertical) {

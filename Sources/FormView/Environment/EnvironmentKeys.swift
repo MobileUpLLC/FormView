@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// MARK: - FocusedFieldIdKey
+
 private struct FocusedFieldIdKey: EnvironmentKey {
     static var defaultValue: String = .empty
 }
@@ -18,6 +20,8 @@ extension EnvironmentValues {
     }
 }
 
+// MARK: - ValidationBehaviourKey
+
 private struct ValidationBehaviourKey: EnvironmentKey {
     static var defaultValue: ValidationBehaviour = .never
 }
@@ -28,6 +32,8 @@ extension EnvironmentValues {
         set { self[ValidationBehaviourKey.self] = newValue }
     }
 }
+
+// MARK: - ErrorHideBahaviourKey
 
 private struct ErrorHideBehaviourKey: EnvironmentKey {
     static var defaultValue: ErrorHideBehaviour = .onValueChanged
