@@ -19,7 +19,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     @Environment(\.focusedFieldId) var currentFocusedFieldId
     
     // ValidateInput
-    private let validator: FieldValidator<Value, Rule>
+    private let validator: FieldValidator<Rule>
     @Environment(\.errorHideBehaviour) var errorHideBehaviour
     @Environment(\.validationBehaviour) var validationBehaviour
     
@@ -44,7 +44,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
             .preference(
                 key: FieldStatesKey.self,
                 value: [
-                    // Замыкание вызывается FormValidator'ом из FormView для валидации по требованию
+                    // Замыкание для каждого филда вызывается FormValidator'ом из FormView для валидации по требованию
                     FieldState(id: id, isFocused: isFocused) {
                         let failedRules = validator.validate(value: value)
                         print("Failed rules \(failedRules.count) for id: \(id)")
@@ -79,8 +79,4 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
                 }
             }
     }
-}
-
-extension Array {
-    static var empty: Array { [] }
 }

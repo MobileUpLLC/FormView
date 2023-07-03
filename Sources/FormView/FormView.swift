@@ -49,7 +49,7 @@ public struct FormView<Content: View>: View {
                
                 // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
                 formValidator.onValidateRun = { focusOnFirstFailedField in
-                    let resutls = newValue.map { $0.akk() }
+                    let resutls = newValue.map { $0.onValidate() }
                    
                     // Фокус на первом зафейленом филде.
                     if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
@@ -69,8 +69,4 @@ public struct FormView<Content: View>: View {
             .environment(\.errorHideBehaviour, errorHideBehaviour)
             .environment(\.validationBehaviour, validationBehaviour)
     }
-}
-
-extension String {
-    static var empty: String { "" }
 }
