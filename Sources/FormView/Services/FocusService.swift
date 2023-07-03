@@ -8,7 +8,7 @@
 import Foundation
 
 enum FocusService {
-    static func getNextFocusField(states: [FieldFocusState], currentFocusField: String) -> String {
+    static func getNextFocusFieldId(states: [FieldState], currentFocusField: String) -> String {
         let nextIndex = (states.firstIndex { $0.isFocused } ?? -1) + 1
         let nextFocusField = nextIndex < states.count ? states[nextIndex].id : ""
         return nextFocusField == currentFocusField ? nextFocusField + " " : nextFocusField

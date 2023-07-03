@@ -9,87 +9,51 @@ import SwiftUI
 import FormView
 
 struct ContentView: View {
-    @State var companyName: String = ""
-    @State var employeeName: String = ""
-    @State var employeeAge: String = ""
-    @State var employeeEmail: String = ""
-    @State var companyPhone: String = ""
+    @State var name: String = ""
+    @State var age: String = ""
     @State var pass: String = ""
     @State var confirmPass: String = ""
     
-    private let nameRules: [TextValidationRule] = [.noSpecialCharacters, .newRule]
-    private let ageRules: [TextValidationRule] = [.digitsOnly, .maxLength(2)]
-    private let emailRules: [TextValidationRule] = [.email]
-    private let phoneRules: [TextValidationRule] = [
-        .minLength(11),
-        .maxLength(11),
-        .digitsOnly
-    ]
-    private let passRules: [TextValidationRule] = [
-        .atLeastOneDigit,
-        .atLeastOneLetter
-    ]
-    
     var body: some View {
-        FormView {
-            ScrollView(.vertical) {
-                formField("Company", value: $companyName, rules: nameRules)
-                formField("Name", value: $employeeName, rules: nameRules)
-                formField("Age", value: $employeeAge, rules: ageRules)
-                formField("Email", value: $employeeEmail, rules: emailRules)
-                formField("Company phone", value: $companyPhone, rules: phoneRules)
-                formField("Pass", value: $pass, rules: passRules, isSecure: true)
-                formField("Confirm pass", value: $confirmPass, rules: passRules + [.equalTo(pass)], isSecure: true)
+        FormView(
+            validate: .onFieldFocusLost,
+            hideError: .onValueChanged
+        ) { proxy in
+            FormField(
+                value: $name,
+                rules: [TextValidationRule.noSpecialCharacters, .notEmpty, .newRule]
+            ) { failedRules in
+                TextInputField(title: "Name", text: $name, failedRules: failedRules)
             }
-            .padding(.horizontal, 16)
+            FormField(
+                value: $age,
+                rules: [TextValidationRule.digitsOnly, .maxLength(2)]
+            ) { failedRules in
+                TextInputField(title: "Age", text: $age, failedRules: failedRules)
+            }
+            FormField(
+                value: $pass,
+                rules: [TextValidationRule.atLeastOneDigit, .atLeastOneLetter]
+            ) { failedRules in
+                SecureInputField(title: "Password", text: $pass, failedRules: failedRules)
+            }
+            FormField(
+                value: $confirmPass,
+                rules: [TextValidationRule.equalTo(pass), .notEmpty]
+            ) { failedRules in
+                SecureInputField(title: "Confirm Password", text: $confirmPass, failedRules: failedRules)
+            }
+            Button("Validate") {
+                print("Form is valid: \(proxy.validate())")
+            }
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 40)
+        .frame(maxHeight: .infinity, alignment: .top)
         .background(
             Color(red: 245 / 255.0, green: 246 / 255.0, blue: 250 / 255.0)
                 .ignoresSafeArea()
         )
-    }
-    
-    private func formField(
-        _ title: LocalizedStringKey,
-        value: Binding<String>,
-        rules: [TextValidationRule],
-        isSecure: Bool = false
-    ) -> some View {
-        FormField(
-            value: value,
-            validationRules: rules
-        ) { failedValidationRules in
-            fieldView(
-                title,
-                value: value,
-                rules: rules,
-                failedRules: failedValidationRules,
-                isSecure: isSecure
-            )
-        }
-    }
-    
-    @ViewBuilder
-    private func fieldView(
-        _ title: LocalizedStringKey,
-        value: Binding<String>,
-        rules: [TextValidationRule],
-        failedRules: [TextValidationRule],
-        isSecure: Bool
-    ) -> some View {
-        if isSecure {
-            SecureFormField(
-                title,
-                text: value,
-                failedValidationRules: failedRules
-            )
-        } else {
-            MyFormField(
-                title,
-                text: value,
-                failedValidationRules: failedRules
-            )
-        }
     }
 }
 

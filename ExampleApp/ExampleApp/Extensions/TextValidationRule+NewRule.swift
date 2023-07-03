@@ -9,6 +9,6 @@ import FormView
 
 extension TextValidationRule {
     static var newRule: Self {
-        TextValidationRule { _ in return false }
+        TextValidationRule { _ in return true }
     }
 }

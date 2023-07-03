@@ -7,27 +7,66 @@
 
 import SwiftUI
 
+public enum ValidationBehaviour {
+    case onFieldValueChanged
+    case onFieldFocusLost
+    case never
+}
+
+public enum ErrorHideBehaviour {
+    case onValueChanged
+    case onFocus
+    case onFocusLost
+}
+
 public struct FormView<Content: View>: View {
-    @State private var fieldFocusStates: [FieldFocusState] = []
-    @State private var focusField: String = ""
+    @State private var fieldStates: [FieldState] = .empty
+    @State private var currentFocusedFieldId: String = .empty
     
     @ViewBuilder private let content: Content
     
-    public init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+    private let formValidator = FormValidator()
+    private let errorHideBehaviour: ErrorHideBehaviour
+    private let validationBehaviour: ValidationBehaviour
+    
+    public init(
+        validate: ValidationBehaviour = .never,
+        hideError: ErrorHideBehaviour = .onValueChanged,
+        @ViewBuilder content: (FormValidator) -> Content
+    ) {
+        self.content = content(formValidator)
+        self.validationBehaviour = validate
+        self.errorHideBehaviour = hideError
     }
     
     public var body: some View {
         content
-            .onPreferenceChange(FieldFocusStatesKey.self) { newValue in
-                fieldFocusStates = newValue
+            .onPreferenceChange(FieldStatesKey.self) { newValue in
+                fieldStates = newValue
+                
+                let focusedField = newValue.first { $0.isFocused }
+                currentFocusedFieldId = focusedField?.id ?? .empty
+               
+                // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
+                formValidator.onValidateRun = { focusOnFirstFailedField in
+                    let resutls = newValue.map { $0.onValidate() }
+                   
+                    // Фокус на первом зафейленом филде.
+                    if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
+                        currentFocusedFieldId = fieldStates[index].id
+                    }
+                        
+                    return resutls.reduce(into: true) { $0 = $0 && $1 }
+                }
             }
             .onSubmit(of: .text) {
-                focusField = FocusService.getNextFocusField(
-                    states: fieldFocusStates,
-                    currentFocusField: focusField
+                currentFocusedFieldId = FocusService.getNextFocusFieldId(
+                    states: fieldStates,
+                    currentFocusField: currentFocusedFieldId
                 )
             }
-            .environment(\.focusField, focusField)
+            .environment(\.focusedFieldId, currentFocusedFieldId)
+            .environment(\.errorHideBehaviour, errorHideBehaviour)
+            .environment(\.validationBehaviour, validationBehaviour)
     }
 }

@@ -14,7 +14,7 @@ final class ValidatorTests: XCTestCase {
         var text: String = ""
         var failedValidationRules: [TextValidationRule] = []
         
-        let validator = Validator<String, TextValidationRule>(
+        let validator = FieldValidator<String, TextValidationRule>(
             value: Binding(get: { text }, set: { text = $0 }),
             validationRules: [.digitsOnly],
             inputRules: [.maxLength(4)],

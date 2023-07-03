@@ -10,104 +10,71 @@
 </div>
 <br>
 
-An easy-to-use SwiftUI library for working with a group of **TextFields**.
+An easy-to-use SwiftUI library for working with a group of input fields.
 
-- [Features](#features)
 - [Usage](#usage)
-- [Example Project](#example-project)
-- [Installation](#installation)
 - [License](#license)
 
-## Features
-
-- Automatic transition between **TextFields** upon submission
-- Validation of **TextFields** based on specified rules
-- Prevention of incorrect input based on specified rules
 
 ## Usage
 
+Create project specific input field with display error suppourt via failed validation rules.
 ```swift
-struct ContentView: View {
-    
-    @State var email: String = ""
-    @State var phone: String = ""
-    
-    @State var emailFailedRules: [TextValidationRule] = []
+struct TextInputField: View {
+    let title: LocalizedStringKey
+    let text: Binding<String>
+    // Failed rules come from FormField on validation fail.
+    let failedRules: [TextValidationRule]
     
     var body: some View {
-        FormView {
-            ScrollView(.vertical) {
-                FormField(
-                    "Email",
-                    text: $email,
-                    validationRules: [.email],
-                    failedValidationRules: $emailFailedRules
-                )
-                if emailFailedRules.isEmpty == false {
-                    Text("Email")
-                        .foregroundColor(.red)
-                }
-                FormField(
-                    "Phone",
-                    text: $phone,
-                    validationRules: [.digitsOnly],
-                    inputRules: [.digitsOnly]
-                )
+        VStack(alignment: .leading) {
+            TextField(title, text: text)
+                .background(Color.white)
+            // Display error.
+            if failedRules.isEmpty == false {
+                Text(failedRules[0].errorMessage)
+                    .foregroundColor(.red)
             }
         }
     }
 }
 ```
 
-`ValidationRules` are used for automatic validation of text during input. All rules that have not passed the validation come with the `failedValidationRules`.
-
-`InputRules` are used to prevent incorrect input.
-
-You can also use a `.formView()` modifier instead of `FormView`:
-
+Use project specific input field inside `FormField`.
 ```swift
-ScrollView(.vertical) {
-    ...
+struct ContentView: View {
+    @State var name: String = ""
+    
+    var body: some View {
+        FormView(
+            validate: .never,
+            hideError: .onValueChanged
+        ) { proxy in
+            FormField(
+                value: $name,
+                rules: [TextValidationRule.notEmpty]
+            ) { failedRules in
+                TextInputField(title: "Name", text: $name, failedRules: failedRules)
+            }
+            // Other input fields...
+            Button("Validate") {
+                // Validate form on action.
+                print("Form is valid: \(proxy.validate())")
+            }
+        }
+    }
 }
-.formView()
 ```
-
-## Example Project
-
-[ExampleApp](https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview/-/tree/main/ExampleApp) provides several more interesting use cases of **FormView**.
 
 ## Installation
 
-### Swift Package Manager
-
-The [Swift Package Manager](https://swift.org/package-manager/) is a tool for automating the distribution of Swift code.
-
-In Xcode 14 or later, select `File > Add Packages...` In the search bar, type
-
-```
-https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview
-``` 
-
-Then proceed with installation.
-
-You can add **FormView** as a dependency to the `dependencies` value of your `Package.swift`:
+### SPM
 
 ```swift
 dependencies: [
-    .package(url: "https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview", from: "main"),
+    .package(url: "https://gitlab.com/mobileup/mobileup/development-ios/libraries/formview", .upToNextMajor(from: "1.0.0"))
 ]
 ```
-
-### CocoaPods
-
-1. Make ```pod init``` 
-2. Add the following to Podfile 
-
-```
-pod 'FormView', :git => 'https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview', :tag => '0.0.1'
-```
-
-3. Make ```pod install```
 
 ## License
 

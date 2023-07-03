@@ -8,7 +8,7 @@
 import FormView
 
 extension TextValidationRule {
-    func getErrorMessage() -> String {
+    var errorMessage: String {
         if self == .notEmpty {
             return "Not empty"
         } else {
