@@ -27,5 +27,3 @@ struct TextInputField: View {
         .frame(height: 50)
     }
 }
-
-

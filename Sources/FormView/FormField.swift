@@ -25,12 +25,12 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     
     public init(
         value: Binding<Value>,
-        validationRules: [Rule] = [],
+        rules: [Rule] = [],
         @ViewBuilder content: @escaping ([Rule]) -> Content
     ) {
         self._value = value
         self.content = content
-        self.validator = FieldValidator(rules: validationRules)
+        self.validator = FieldValidator(rules: rules)
     }
     
     public var body: some View {

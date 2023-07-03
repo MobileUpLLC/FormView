@@ -21,25 +21,25 @@ struct ContentView: View {
         ) { proxy in
             FormField(
                 value: $name,
-                validationRules: [TextValidationRule.noSpecialCharacters, .notEmpty, .newRule]
+                rules: [TextValidationRule.noSpecialCharacters, .notEmpty, .newRule]
             ) { failedRules in
                 TextInputField(title: "Name", text: $name, failedRules: failedRules)
             }
             FormField(
                 value: $age,
-                validationRules: [TextValidationRule.digitsOnly, .maxLength(2)]
+                rules: [TextValidationRule.digitsOnly, .maxLength(2)]
             ) { failedRules in
                 TextInputField(title: "Age", text: $age, failedRules: failedRules)
             }
             FormField(
                 value: $pass,
-                validationRules: [TextValidationRule.atLeastOneDigit, .atLeastOneLetter]
+                rules: [TextValidationRule.atLeastOneDigit, .atLeastOneLetter]
             ) { failedRules in
                 SecureInputField(title: "Password", text: $pass, failedRules: failedRules)
             }
             FormField(
                 value: $confirmPass,
-                validationRules: [TextValidationRule.equalTo(pass), .notEmpty]
+                rules: [TextValidationRule.equalTo(pass), .notEmpty]
             ) { failedRules in
                 SecureInputField(title: "Confirm Password", text: $confirmPass, failedRules: failedRules)
             }
