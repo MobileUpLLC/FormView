@@ -19,38 +19,37 @@ struct ContentView: View {
             validate: .onFieldFocusLost,
             hideError: .onValueChanged
         ) { proxy in
-            ScrollView(.vertical) {
-                FormField(
-                    value: $name,
-                    validationRules: [TextValidationRule.noSpecialCharacters, .notEmpty, .newRule]
-                ) { failedRules in
-                    TextInputField(title: "Name", text: $name, failedRules: failedRules)
-                }
-                FormField(
-                    value: $age,
-                    validationRules: [TextValidationRule.digitsOnly, .maxLength(2)]
-                ) { failedRules in
-                    TextInputField(title: "Age", text: $age, failedRules: failedRules)
-                }
-                FormField(
-                    value: $pass,
-                    validationRules: [TextValidationRule.atLeastOneDigit, .atLeastOneLetter]
-                ) { failedRules in
-                    SecureInputField(title: "Password", text: $pass, failedRules: failedRules)
-                }
-                FormField(
-                    value: $confirmPass,
-                    validationRules: [TextValidationRule.equalTo(pass), .notEmpty]
-                ) { failedRules in
-                    SecureInputField(title: "Confirm Password", text: $confirmPass, failedRules: failedRules)
-                }
-                Button("Validate") {
-                    print("Form is valid: \(proxy.validate())")
-                }
+            FormField(
+                value: $name,
+                validationRules: [TextValidationRule.noSpecialCharacters, .notEmpty, .newRule]
+            ) { failedRules in
+                TextInputField(title: "Name", text: $name, failedRules: failedRules)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 40)
+            FormField(
+                value: $age,
+                validationRules: [TextValidationRule.digitsOnly, .maxLength(2)]
+            ) { failedRules in
+                TextInputField(title: "Age", text: $age, failedRules: failedRules)
+            }
+            FormField(
+                value: $pass,
+                validationRules: [TextValidationRule.atLeastOneDigit, .atLeastOneLetter]
+            ) { failedRules in
+                SecureInputField(title: "Password", text: $pass, failedRules: failedRules)
+            }
+            FormField(
+                value: $confirmPass,
+                validationRules: [TextValidationRule.equalTo(pass), .notEmpty]
+            ) { failedRules in
+                SecureInputField(title: "Confirm Password", text: $confirmPass, failedRules: failedRules)
+            }
+            Button("Validate") {
+                print("Form is valid: \(proxy.validate())")
+            }
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 40)
+        .frame(maxHeight: .infinity, alignment: .top)
         .background(
             Color(red: 245 / 255.0, green: 246 / 255.0, blue: 250 / 255.0)
                 .ignoresSafeArea()

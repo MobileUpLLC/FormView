@@ -68,10 +68,8 @@
 			children = (
 				426CF63729850D1A00012FBE /* ExampleApp.swift */,
 				426CF63929850D1A00012FBE /* ContentView.swift */,
-				4211F22D2999730F00D13FD0 /* TextInputField.swift */,
-				E1E8FCDA2A52B8CD0099A852 /* SecureInputField.swift */,
-				426A30D029DDC64F00C5FB02 /* TextValidationRule+Error.swift */,
-				426A30E429E81D5A00C5FB02 /* TextValidationRule+NewRule.swift */,
+				E1E8FCDC2A52C61D0099A852 /* InputFields */,
+				E1E8FCDD2A52C6620099A852 /* Extensions */,
 				426CF63B29850D1B00012FBE /* Assets.xcassets */,
 				426CF63D29850D1B00012FBE /* Preview Content */,
 			);
@@ -99,6 +97,24 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E1E8FCDC2A52C61D0099A852 /* InputFields */ = {
+			isa = PBXGroup;
+			children = (
+				4211F22D2999730F00D13FD0 /* TextInputField.swift */,
+				E1E8FCDA2A52B8CD0099A852 /* SecureInputField.swift */,
+			);
+			path = InputFields;
+			sourceTree = "<group>";
+		};
+		E1E8FCDD2A52C6620099A852 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				426A30D029DDC64F00C5FB02 /* TextValidationRule+Error.swift */,
+				426A30E429E81D5A00C5FB02 /* TextValidationRule+NewRule.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
