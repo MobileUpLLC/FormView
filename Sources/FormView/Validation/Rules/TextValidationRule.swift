@@ -7,12 +7,14 @@
 
 import Foundation
 
-public struct TextValidationRule: ValidationRule, Equatable {
-    private let checkClosure: (String) -> Bool
-    public let id: UUID = UUID()
+public struct TextValidationRule: ValidationRule {
+    public let message: String
     
-    public init(_ checkClosure: @escaping (String) -> Bool) {
+    private let checkClosure: (String) -> Bool
+    
+    public init(message: String, checkClosure: @escaping (String) -> Bool) {
         self.checkClosure = checkClosure
+        self.message = message
     }
     
     public func check(value: String) -> Bool {
@@ -21,105 +23,95 @@ public struct TextValidationRule: ValidationRule, Equatable {
 }
 
 extension TextValidationRule {
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
-
-extension TextValidationRule {
-    public static var notEmpty: Self {
-        TextValidationRule {
+    public static func notEmpty(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.isEmpty == false
         }
     }
     
-    public static var atLeastOneLowercaseLetter: Self {
-        TextValidationRule {
+    public static func atLeastOneLowercaseLetter(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.rangeOfCharacter(from: CharacterSet.lowercaseLetters) != nil
         }
     }
     
-    public static var atLeastOneUppercaseLetter: Self {
-        TextValidationRule {
+    public static func atLeastOneUppercaseLetter(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.rangeOfCharacter(from: CharacterSet.uppercaseLetters) != nil
         }
     }
     
-    public static var atLeastOneDigit: Self {
-        TextValidationRule {
+    public static func atLeastOneDigit(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil
         }
     }
     
-    public static var atLeastOneLetter: Self {
-        TextValidationRule {
+    public static func atLeastOneLetter(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.rangeOfCharacter(from: CharacterSet.letters) != nil
         }
     }
     
-    public static var digitsOnly: Self {
-        TextValidationRule {
+    public static func digitsOnly(message: String) -> Self {
+        TextValidationRule(message: message) {
             CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: $0))
         }
     }
     
-    public static var lettersOnly: Self {
-        TextValidationRule {
+    public static func lettersOnly(message: String) -> Self {
+        TextValidationRule(message: message) {
             CharacterSet.letters.isSuperset(of: CharacterSet(charactersIn: $0))
         }
     }
     
-    public static var atLeastOneSpecialCharacter: Self {
-        TextValidationRule {
+    public static func atLeastOneSpecialCharacter(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.range(of: ".*[^A-Za-zА-Яа-яё0-9 ].*", options: .regularExpression) != nil
         }
     }
     
-    public static var noSpecialCharacters: Self {
-        TextValidationRule {
+    public static func noSpecialCharacters(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.range(of: ".*[^A-Za-zА-Яа-яё0-9 ].*", options: .regularExpression) == nil
         }
     }
     
-    public static var email: Self {
-        TextValidationRule {
-            NSPredicate(
-                format: "SELF MATCHES %@",
-                "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-            ).evaluate(with: $0)
+    public static func email(message: String) -> Self {
+        TextValidationRule(message: message) {
+            NSPredicate(format: "SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
+                .evaluate(with: $0)
         }
     }
     
-    public static var notRecurringPincode: Self {
-        TextValidationRule {
+    public static func notRecurringPincode(message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.range(of: "([0-9])\\1\\1\\1", options: .regularExpression) == nil
         }
     }
     
-    public static func minLength(_ count: Int) -> Self {
-        TextValidationRule {
+    public static func minLength(count: Int, message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.count >= count
         }
     }
     
-    public static func maxLength(_ count: Int) -> Self {
-        TextValidationRule {
+    public static func maxLength(count: Int, message: String) -> Self {
+        TextValidationRule(message: message) {
             $0.count <= count
         }
     }
     
-    public static func regex(_ regex: String) -> Self {
-        TextValidationRule {
-            NSPredicate(
-                format: "SELF MATCHES %@",
-                regex
-            ).evaluate(with: $0)
+    public static func regex(value: String, message: String) -> Self {
+        TextValidationRule(message: message) {
+            NSPredicate(format: "SELF MATCHES %@", value)
+                .evaluate(with: $0)
         }
     }
     
-    public static func equalTo(_ string: String) -> Self {
-        TextValidationRule {
-            $0 == string
+    public static func equalTo(value: String, message: String) -> Self {
+        TextValidationRule(message: message) {
+            $0 == value
         }
     }
 }
