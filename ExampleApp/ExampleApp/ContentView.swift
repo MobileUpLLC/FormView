@@ -51,7 +51,7 @@ struct ContentView: View {
             FormField(
                 value: $confirmPass,
                 rules: [
-                    TextValidationRule.equalTo(value: pass,message: "Not equal to pass"),
+                    TextValidationRule.equalTo(value: pass, message: "Not equal to pass"),
                     .notEmpty(message: "Confirm pass not empty")
                 ]
             ) { failedRules in
