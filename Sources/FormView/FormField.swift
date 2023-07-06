@@ -15,7 +15,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     
     // Fields Focus
     @FocusState private var isFocused: Bool
-    private let id: String = UUID().uuidString
+    @State private var id: String = UUID().uuidString
     @Environment(\.focusedFieldId) var currentFocusedFieldId
     
     // ValidateInput
