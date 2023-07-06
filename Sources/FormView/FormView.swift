@@ -22,25 +22,25 @@ public enum ErrorHideBehaviour {
 public struct FormView<Content: View>: View {
     @State private var fieldStates: [FieldState] = .empty
     @State private var currentFocusedFieldId: String = .empty
+    @State private var formValidator = FormValidator()
     
-    @ViewBuilder private let content: Content
+    @ViewBuilder private let content: (FormValidator) -> Content
     
-    private let formValidator = FormValidator()
     private let errorHideBehaviour: ErrorHideBehaviour
     private let validationBehaviour: ValidationBehaviour
     
     public init(
         validate: ValidationBehaviour = .never,
         hideError: ErrorHideBehaviour = .onValueChanged,
-        @ViewBuilder content: (FormValidator) -> Content
+        @ViewBuilder content: @escaping (FormValidator) -> Content
     ) {
-        self.content = content(formValidator)
+        self.content = content
         self.validationBehaviour = validate
         self.errorHideBehaviour = hideError
     }
     
     public var body: some View {
-        content
+        content(formValidator)
             .onPreferenceChange(FieldStatesKey.self) { newValue in
                 fieldStates = newValue
                 
