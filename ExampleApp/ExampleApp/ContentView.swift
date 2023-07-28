@@ -8,13 +8,6 @@
 import SwiftUI
 import FormView
 
-class ContentViewModel: ObservableObject {
-    @Published var name: String = ""
-    @Published var age: String = ""
-    @Published var pass: String = ""
-    @Published var confirmPass: String = ""
-}
-
 struct ContentView: View {
     @ObservedObject var viewModel: ContentViewModel
     

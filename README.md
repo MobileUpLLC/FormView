@@ -72,7 +72,7 @@ struct ContentView: View {
 
 ```swift
 dependencies: [
-    .package(url: "https://gitlab.com/mobileup/mobileup/development-ios/libraries/formview", .upToNextMajor(from: "1.0.0"))
+    .package(url: "https://gitlab.com/mobileup/mobileup/development-ios/libraries/formview", .upToNextMajor(from: "1.1.2"))
 ]
 ```
 
