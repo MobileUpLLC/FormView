@@ -18,7 +18,7 @@ struct TextInputField: View {
             TextField(title, text: text)
                 .background(Color.white)
             if failedRules.isEmpty == false {
-                Text(failedRules[0].errorMessage)
+                Text(failedRules[0].message)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.red)
             }
