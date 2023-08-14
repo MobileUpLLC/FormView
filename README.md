@@ -137,11 +137,11 @@ FormView doesn't use any external dependencies.
 ```swift
 dependencies: [
     .package(
-        url: "https://github.com/MobileUpLLC/formview",
+        url: "https://github.com/MobileUpLLC/FormView",
         .upToNextMajor(from: "1.1.2")
     )
 ]
 ```
 
 ## License
-FormView is destributed under the [MIT license](https://gitlab.com/mobileup/mobileup/development-ios/test-projects/formview/-/blob/main/LICENSE).
+FormView is destributed under the [MIT license](https://github.com/MobileUpLLC/FormView/blob/main/LICENSE).
