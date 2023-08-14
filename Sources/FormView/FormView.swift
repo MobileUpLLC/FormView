@@ -55,8 +55,8 @@ public struct FormView<Content: View>: View {
                     if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
                         currentFocusedFieldId = fieldStates[index].id
                     }
-                        
-                    return resutls.reduce(into: true) { $0 = $0 && $1 }
+                       
+                    return resutls.allSatisfy { $0 }
                 }
             }
             .onSubmit(of: .text) {
