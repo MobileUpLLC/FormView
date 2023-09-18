@@ -21,6 +21,8 @@ public struct FormField: View {
     @Binding private var isSecure: Bool
     @State private var securedText: String = ""
     @State private var textLength: Int = 0
+    @State private var focusChangeCounter = 0
+    @State private var lastSecureFocusCounter = 0
     
     public init(
         _ title: LocalizedStringKey = "",
@@ -68,6 +70,9 @@ public struct FormField: View {
         .onChange(of: focusField) { newValue in
             isFocused = newValue.trimmingCharacters(in: .whitespaces) == id
         }
+        .onChange(of: isFocused) { newValue in
+            focusChangeCounter += 1
+        }
         .onAppear {
             validator.validate()
         }
@@ -90,11 +95,14 @@ public struct FormField: View {
         // При смене фокуса SecureField удаляет ранее введенный текст.
         // Чтобы текст сохранялся нужно определить было ли нажато удаление или добавление нового символа
         // и выполнить перезапись обновленного текста в модель.
-        let isCharRemoved = textLength > 0 && textLength - newValue.count == textLength
+        let isCharRemoved = lastSecureFocusCounter == focusChangeCounter
+            ? textLength > 0 && textLength > newValue.count
+            : textLength > 0 && textLength - newValue.count == textLength
+        
         let isCharAdded = textLength > 0 && textLength - newValue.count > 1
         
         if isCharRemoved {
-            securedText.removeLast()
+            securedText = newValue
             validator.value = securedText
         } else if isCharAdded {
             validator.value = securedText + newValue
@@ -102,6 +110,7 @@ public struct FormField: View {
             securedText = newValue
         }
         
+        lastSecureFocusCounter = focusChangeCounter
         textLength = newValue.count
     }
 }
