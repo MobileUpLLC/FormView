@@ -15,7 +15,7 @@ struct ContentView: View {
         FormView(
             validate: .never,
             hideError: .onValueChanged
-        ) { proxy in
+        ) { validate in
             FormField(
                 value: $viewModel.name,
                 rules: [
@@ -55,7 +55,7 @@ struct ContentView: View {
                 SecureInputField(title: "Confirm Password", text: $viewModel.confirmPass, failedRules: failedRules)
             }
             Button("Validate") {
-                print("Form is valid: \(proxy.validate())")
+                print("Form is valid: \(proxy(true))")
             }
         }
         .padding(.horizontal, 16)
@@ -70,6 +70,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(viewModel: ContentViewModel())
+        ContentView(viewModel: ContentViewModel(coordinator: ContentCoordinator()))
     }
 }

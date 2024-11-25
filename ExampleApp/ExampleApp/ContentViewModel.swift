@@ -12,4 +12,15 @@ class ContentViewModel: ObservableObject {
     @Published var age: String = ""
     @Published var pass: String = ""
     @Published var confirmPass: String = ""
+    
+    let coordinator: ContentCoordinator
+    
+    init(coordinator: ContentCoordinator) {
+        self.coordinator = coordinator
+        print("init ContentViewModel")
+    }
+    
+    deinit {
+        print("deinit ContentViewModel")
+    }
 }

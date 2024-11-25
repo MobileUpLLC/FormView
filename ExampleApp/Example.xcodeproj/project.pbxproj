@@ -14,6 +14,8 @@
 		426CF63C29850D1B00012FBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 426CF63B29850D1B00012FBE /* Assets.xcassets */; };
 		426CF63F29850D1B00012FBE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 426CF63E29850D1B00012FBE /* Preview Assets.xcassets */; };
 		426CF64929850DD400012FBE /* FormView in Frameworks */ = {isa = PBXBuildFile; productRef = 426CF64829850DD400012FBE /* FormView */; };
+		739E30032CF4A1AF009B795F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739E30022CF4A1AB009B795F /* AppDelegate.swift */; };
+		739E30052CF4A1CF009B795F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739E30042CF4A1CE009B795F /* SceneDelegate.swift */; };
 		E1DB5A1F2A73BFCF0024C47A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DB5A1E2A73BFCF0024C47A /* ContentViewModel.swift */; };
 		E1E8FCDB2A52B8CD0099A852 /* SecureInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E8FCDA2A52B8CD0099A852 /* SecureInputField.swift */; };
 /* End PBXBuildFile section */
@@ -28,6 +30,8 @@
 		426CF63E29850D1B00012FBE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		426CF64629850D9F00012FBE /* FormView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FormView; path = ..; sourceTree = "<group>"; };
 		426CF64C29903DBC00012FBE /* Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Example-Info.plist"; sourceTree = "<group>"; };
+		739E30022CF4A1AB009B795F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		739E30042CF4A1CE009B795F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		E1DB5A1E2A73BFCF0024C47A /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		E1E8FCDA2A52B8CD0099A852 /* SecureInputField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecureInputField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,6 +70,8 @@
 		426CF63629850D1A00012FBE /* ExampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				739E30022CF4A1AB009B795F /* AppDelegate.swift */,
+				739E30042CF4A1CE009B795F /* SceneDelegate.swift */,
 				426CF63729850D1A00012FBE /* ExampleApp.swift */,
 				426CF63929850D1A00012FBE /* ContentView.swift */,
 				E1DB5A1E2A73BFCF0024C47A /* ContentViewModel.swift */,
@@ -209,8 +215,10 @@
 				E1E8FCDB2A52B8CD0099A852 /* SecureInputField.swift in Sources */,
 				E1DB5A1F2A73BFCF0024C47A /* ContentViewModel.swift in Sources */,
 				426A30E529E81D5A00C5FB02 /* MyRule.swift in Sources */,
+				739E30032CF4A1AF009B795F /* AppDelegate.swift in Sources */,
 				426CF63A29850D1A00012FBE /* ContentView.swift in Sources */,
 				426CF63829850D1A00012FBE /* ExampleApp.swift in Sources */,
+				739E30052CF4A1CF009B795F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
