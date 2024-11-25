@@ -15,7 +15,7 @@ struct ContentView: View {
         FormView(
             validate: .never,
             hideError: .onValueChanged
-        ) { validate in
+        ) { [weak viewModel] proxy in
             FormField(
                 value: $viewModel.name,
                 rules: [
@@ -48,14 +48,14 @@ struct ContentView: View {
             FormField(
                 value: $viewModel.confirmPass,
                 rules: [
-                    TextValidationRule.equalTo(value: viewModel.pass, message: "Not equal to pass"),
+                    TextValidationRule.equalTo(value: viewModel?.pass ?? "", message: "Not equal to pass"),
                     .notEmpty(message: "Confirm pass not empty")
                 ]
             ) { failedRules in
                 SecureInputField(title: "Confirm Password", text: $viewModel.confirmPass, failedRules: failedRules)
             }
             Button("Validate") {
-                print("Form is valid: \(proxy(true))")
+                print("Form is valid: \(proxy.validate())")
             }
         }
         .padding(.horizontal, 16)

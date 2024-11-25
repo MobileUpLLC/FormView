@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct FormValidator {
+public class FormValidator: ObservableObject {
     var onValidateRun: ((Bool) -> Bool)?
     
     public init() {
