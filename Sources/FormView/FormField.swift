@@ -8,17 +8,18 @@
 import SwiftUI
 
 class FormFieldStateHandler<Value: Hashable, Rule: ValidationRule>: ObservableObject {
-    @Published var failedValidationRules: [Rule] = []
-    
-    var id: String = UUID().uuidString
+    var failedValidationRules: [Rule] = []
     
     private var value: Value
     private var isFocused: Bool = false
+    
+    private let id: String
     private let validator: FieldValidator<Rule>
     
-    init(value: Value, failedValidationRules: [Rule]) {
+    init(value: Value, failedValidationRules: [Rule], id: String) {
         self.value = value
         self.failedValidationRules = failedValidationRules
+        self.id = id
         self.validator = FieldValidator(rules: failedValidationRules)
     }
     
@@ -62,21 +63,24 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     
     // Fields Focus
     @FocusState private var isFocused: Bool
-//    @State private var id: String = UUID().uuidString
     @Environment(\.focusedFieldId) var currentFocusedFieldId
     
     // ValidateInput
     @Environment(\.errorHideBehaviour) var errorHideBehaviour
     @Environment(\.validationBehaviour) var validationBehaviour
     
+    private var id: String
+    
     public init(
         value: Binding<Value>,
         rules: [Rule] = [],
+        id: String = UUID().uuidString,
         @ViewBuilder content: @escaping ([Rule]) -> Content
     ) {
         self._value = value
         self.content = content
-        self._fromStateHandler = StateObject(wrappedValue: FormFieldStateHandler<Value, Rule>(value: value.wrappedValue, failedValidationRules: rules))
+        self.id = id
+        self._fromStateHandler = StateObject(wrappedValue: FormFieldStateHandler<Value, Rule>(value: value.wrappedValue, failedValidationRules: rules, id: id))
     }
     
     public var body: some View {
@@ -84,7 +88,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
         // Fields Focus
             .onChange(of: currentFocusedFieldId) { newValue in
                 DispatchQueue.main.async {
-                    isFocused = newValue.trimmingCharacters(in: .whitespaces) == fromStateHandler.id
+                    isFocused = newValue.trimmingCharacters(in: .whitespaces) == id
                 }
             }
             .preference(
