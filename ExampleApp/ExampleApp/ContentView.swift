@@ -15,7 +15,7 @@ struct ContentView: View {
         FormView(
             validate: .never,
             hideError: .onValueChanged
-        ) { [weak viewModel] proxy in
+        ) { proxy in
             FormField(
                 value: $viewModel.name,
                 rules: [
