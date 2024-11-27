@@ -13,7 +13,7 @@ class ContentViewModel: ObservableObject {
     @Published var pass: String = ""
     @Published var confirmPass: String = ""
     
-    let coordinator: ContentCoordinator
+    private let coordinator: ContentCoordinator
     
     init(coordinator: ContentCoordinator) {
         self.coordinator = coordinator
