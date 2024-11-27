@@ -38,6 +38,8 @@ public struct FormView<Content: View>: View {
     
     public var body: some View {
         return content(formStateHandler.formValidator)
+            // [weak formStateHandler] необходимо для избежания захвата сильных ссылок между
+            // замыканием и @StateObject
             .onPreferenceChange(FieldStatesKey.self) { [weak formStateHandler] newStates in
                 formStateHandler?.updateFieldStates(newStates: newStates)
             }
