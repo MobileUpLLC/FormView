@@ -19,6 +19,43 @@ public enum ErrorHideBehaviour {
     case onFocusLost
 }
 
+private class FormStateHandler: ObservableObject {
+    @Published var fieldStates: [FieldState] = .empty
+    @Published var currentFocusedFieldId: String = .empty
+    @Published var formValidator = FormValidator()
+    
+    func updateFieldStates(newStates: [FieldState]) {
+        fieldStates = newStates
+        
+        let focusedField = newStates.first { $0.isFocused }
+        currentFocusedFieldId = focusedField?.id ?? .empty
+       
+        // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
+        formValidator.onValidateRun = { [weak self] focusOnFirstFailedField in
+            guard let self else {
+                return false
+            }
+            
+            let resutls = newStates.map { $0.onValidate() }
+           
+            // Фокус на первом зафейленом филде.
+            if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
+                currentFocusedFieldId = fieldStates[index].id
+            }
+               
+            return resutls.allSatisfy { $0 }
+        }
+    }
+    
+    func submit() {
+        currentFocusedFieldId = FocusService.getNextFocusFieldId(
+            states: fieldStates,
+            currentFocusField: currentFocusedFieldId
+        )
+    }
+}
+
+
 public struct FormView<Content: View>: View {
     @StateObject private var formStateHandler = FormStateHandler()
     @ViewBuilder private let content: (FormValidator) -> Content
