@@ -22,7 +22,7 @@ public enum ErrorHideBehaviour {
 private class FormStateHandler: ObservableObject {
     @Published var fieldStates: [FieldState] = .empty
     @Published var currentFocusedFieldId: String = .empty
-    @Published var formValidator = FormValidator()
+    var formValidator = FormValidator()
     
     func updateFieldStates(newStates: [FieldState]) {
         fieldStates = newStates
