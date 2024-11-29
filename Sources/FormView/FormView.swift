@@ -55,7 +55,6 @@ private class FormStateHandler: ObservableObject {
     }
 }
 
-
 public struct FormView<Content: View>: View {
     @StateObject private var formStateHandler = FormStateHandler()
     @ViewBuilder private let content: (FormValidator) -> Content
