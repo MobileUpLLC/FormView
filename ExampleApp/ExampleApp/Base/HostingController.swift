@@ -9,8 +9,6 @@ import SwiftUI
 import UIKit
 
 class HostingController<T: View>: UIHostingController<T> {
-    var isNavigationBarHidden: Bool { false }
-    
     override init(rootView: T) {
         super.init(rootView: rootView)
     }
@@ -23,7 +21,6 @@ class HostingController<T: View>: UIHostingController<T> {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
     }
     
     @available(*, unavailable) @MainActor dynamic required init?(coder aDecoder: NSCoder) {
