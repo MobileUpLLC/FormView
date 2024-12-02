@@ -19,11 +19,44 @@ public enum ErrorHideBehaviour {
     case onFocusLost
 }
 
-public struct FormView<Content: View>: View {
-    @State private var fieldStates: [FieldState] = .empty
-    @State private var currentFocusedFieldId: String = .empty
-    @State private var formValidator = FormValidator()
+private class FormStateHandler: ObservableObject {
+    @Published var fieldStates: [FieldState] = .empty
+    @Published var currentFocusedFieldId: String = .empty
+    var formValidator = FormValidator()
     
+    func updateFieldStates(newStates: [FieldState]) {
+        fieldStates = newStates
+        
+        let focusedField = newStates.first { $0.isFocused }
+        currentFocusedFieldId = focusedField?.id ?? .empty
+       
+        // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
+        formValidator.onValidateRun = { [weak self] focusOnFirstFailedField in
+            guard let self else {
+                return false
+            }
+            
+            let resutls = newStates.map { $0.onValidate() }
+           
+            // Фокус на первом зафейленом филде.
+            if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
+                currentFocusedFieldId = fieldStates[index].id
+            }
+               
+            return resutls.allSatisfy { $0 }
+        }
+    }
+    
+    func submit() {
+        currentFocusedFieldId = FocusService.getNextFocusFieldId(
+            states: fieldStates,
+            currentFocusField: currentFocusedFieldId
+        )
+    }
+}
+
+public struct FormView<Content: View>: View {
+    @StateObject private var formStateHandler = FormStateHandler()
     @ViewBuilder private let content: (FormValidator) -> Content
     
     private let errorHideBehaviour: ErrorHideBehaviour
@@ -40,32 +73,16 @@ public struct FormView<Content: View>: View {
     }
     
     public var body: some View {
-        content(formValidator)
-            .onPreferenceChange(FieldStatesKey.self) { newValue in
-                fieldStates = newValue
-                
-                let focusedField = newValue.first { $0.isFocused }
-                currentFocusedFieldId = focusedField?.id ?? .empty
-               
-                // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
-                formValidator.onValidateRun = { focusOnFirstFailedField in
-                    let resutls = newValue.map { $0.onValidate() }
-                   
-                    // Фокус на первом зафейленом филде.
-                    if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
-                        currentFocusedFieldId = fieldStates[index].id
-                    }
-                       
-                    return resutls.allSatisfy { $0 }
-                }
+        return content(formStateHandler.formValidator)
+            // [weak formStateHandler] необходимо для избежания захвата сильных ссылок между
+            // замыканием и @StateObject
+            .onPreferenceChange(FieldStatesKey.self) { [weak formStateHandler] newStates in
+                formStateHandler?.updateFieldStates(newStates: newStates)
             }
-            .onSubmit(of: .text) {
-                currentFocusedFieldId = FocusService.getNextFocusFieldId(
-                    states: fieldStates,
-                    currentFocusField: currentFocusedFieldId
-                )
+            .onSubmit(of: .text) { [weak formStateHandler] in
+                formStateHandler?.submit()
             }
-            .environment(\.focusedFieldId, currentFocusedFieldId)
+            .environment(\.focusedFieldId, formStateHandler.currentFocusedFieldId)
             .environment(\.errorHideBehaviour, errorHideBehaviour)
             .environment(\.validationBehaviour, validationBehaviour)
     }
