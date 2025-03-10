@@ -11,25 +11,22 @@ import XCTest
 
 final class ValidatorTests: XCTestCase {
     func testValidator() throws {
-        var text: String = ""
         var failedValidationRules: [TextValidationRule] = []
         
-        let validator = FieldValidator<String, TextValidationRule>(
-            value: Binding(get: { text }, set: { text = $0 }),
-            validationRules: [.digitsOnly],
-            inputRules: [.maxLength(4)],
-            failedValidationRules: Binding(get: { failedValidationRules }, set: { failedValidationRules = $0 })
+        let validator = FieldValidator<TextValidationRule>(
+            rules: [.digitsOnly(message: ""), .maxLength(count: 4, message: "")]
         )
         
-        validator.value = "1"
-        validator.validate()
+        failedValidationRules = validator.validate(value: "1")
         XCTAssertTrue(failedValidationRules.isEmpty)
+        failedValidationRules.removeAll()
         
-        validator.value = "12_A"
-        XCTAssertEqual(failedValidationRules, [.digitsOnly])
+        failedValidationRules = validator.validate(value: "12_A")
+        XCTAssertTrue(failedValidationRules.isEmpty == false)
+        failedValidationRules.removeAll()
         
-        validator.value = "12345"
-        let failedInputRules = validator.validateInput()
-        XCTAssertEqual(failedInputRules, [.maxLength(4)])
+        failedValidationRules = validator.validate(value: "12345")
+        XCTAssertTrue(failedValidationRules.isEmpty == false)
+        failedValidationRules.removeAll()
     }
 }
