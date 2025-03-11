@@ -19,7 +19,6 @@ final class ValidatorTests: XCTestCase {
         
         failedValidationRules = validator.validate(value: "1")
         XCTAssertTrue(failedValidationRules.isEmpty)
-        failedValidationRules.removeAll()
         
         failedValidationRules = validator.validate(value: "12_A")
         XCTAssertTrue(failedValidationRules.isEmpty == false)

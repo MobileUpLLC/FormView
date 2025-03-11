@@ -14,7 +14,7 @@ let package = Package(
             targets: ["FormView"])
     ],
     dependencies: [
-        .package(url: "https://github.com/nalexn/ViewInspector", exact: .init(0, 10, 1))
+        .package(url: "https://github.com/nalexn/ViewInspector", exact: "0.10.1")
     ],
     targets: [
         .target(
