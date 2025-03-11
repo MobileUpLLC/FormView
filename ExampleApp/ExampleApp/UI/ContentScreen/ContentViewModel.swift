@@ -12,12 +12,17 @@ class ContentViewModel: ObservableObject {
     @Published var age: String = ""
     @Published var pass: String = ""
     @Published var confirmPass: String = ""
+    @Published var nameOuterRules: [OuterValidationRule] = []
     
     private let coordinator: ContentCoordinator
     
     init(coordinator: ContentCoordinator) {
         self.coordinator = coordinator
         print("init ContentViewModel")
+    }
+    
+    func applyNameOuterRules() {
+        nameOuterRules = [.duplicateName]
     }
     
     deinit {

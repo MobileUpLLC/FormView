@@ -24,7 +24,12 @@ struct ContentView: View {
                     .myRule
                 ]
             ) { failedRules in
-                TextInputField(title: "Name", text: $viewModel.name, failedRules: failedRules)
+                TextInputField(
+                    title: "Name",
+                    text: $viewModel.name,
+                    failedRules: failedRules,
+                    outerRules: $viewModel.nameOuterRules
+                )
             }
             FormField(
                 value: $viewModel.age,
@@ -56,6 +61,9 @@ struct ContentView: View {
             }
             Button("Validate") {
                 print("Form is valid: \(proxy.validate())")
+            }
+            Button("Apply name outer rules") {
+                viewModel.applyNameOuterRules()
             }
         }
         .padding(.horizontal, 16)
