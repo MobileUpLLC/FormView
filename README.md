@@ -144,13 +144,13 @@ enum OuterValidationRule {
 ```swift
 struct TextInputField: View {
     let title: LocalizedStringKey
-    let text: Binding<String>
+    @Binding var text: String
     let failedRules: [TextValidationRule]
     @Binding var outerRules: [OuterValidationRule]
     
     var body: some View {
         VStack(alignment: .leading) {
-            TextField(title, text: text)
+            TextField(title, text: $text)
                 .background(Color.white)
             if let errorMessage = getErrorMessage() {
                 Text(errorMessage)
@@ -160,6 +160,9 @@ struct TextInputField: View {
             Spacer()
         }
         .frame(height: 50)
+        .onChange(of: text) { _ in
+            outerRules = []
+        }
     }
     
     private func getErrorMessage() -> String? {
@@ -179,7 +182,7 @@ struct TextInputField: View {
         outerRules: Binding<[OuterValidationRule]> = .constant([])
     ) {
         self.title = title
-        self.text = text
+        self._text = text
         self.failedRules = failedRules
         self._outerRules = outerRules
     }
