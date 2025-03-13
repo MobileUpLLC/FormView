@@ -27,14 +27,6 @@ struct TextInputField: View {
         .frame(height: 50)
     }
     
-    private func getErrorMessage() -> String? {
-        if let message = failedRules.first?.message {
-            return message
-        } else {
-            return nil
-        }
-    }
-    
     init(
         title: LocalizedStringKey,
         text: Binding<String>,
@@ -43,5 +35,13 @@ struct TextInputField: View {
         self.title = title
         self._text = text
         self.failedRules = failedRules
+    }
+    
+    private func getErrorMessage() -> String? {
+        if let message = failedRules.first?.message {
+            return message
+        } else {
+            return nil
+        }
     }
 }
