@@ -6,10 +6,10 @@
 
 import FormView
 
-extension TextValidationRule {
+extension ValidationRule {
     static var myRule: Self {
-        TextValidationRule(message: "Shold contain T") {
-            $0.contains("T")
+        Self.custom {
+            return $0.contains("T") ? nil : "Shold contain T"
         }
     }
 }

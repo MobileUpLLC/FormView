@@ -8,22 +8,10 @@
 import SwiftUI
 import FormView
 
-enum OuterValidationRule {
-    case duplicateName
-    
-    var message: String {
-        switch self {
-        case .duplicateName:
-            return "This name already exists"
-        }
-    }
-}
-
 struct TextInputField: View {
     let title: LocalizedStringKey
     @Binding var text: String
-    let failedRules: [TextValidationRule]
-    @Binding var outerRules: [OuterValidationRule]
+    let failedRules: [ValidationRule]
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -37,15 +25,10 @@ struct TextInputField: View {
             Spacer()
         }
         .frame(height: 50)
-        .onChange(of: text) { _ in
-            outerRules = []
-        }
     }
     
     private func getErrorMessage() -> String? {
         if let message = failedRules.first?.message {
-            return message
-        } else if let message = outerRules.first?.message {
             return message
         } else {
             return nil
@@ -55,12 +38,10 @@ struct TextInputField: View {
     init(
         title: LocalizedStringKey,
         text: Binding<String>,
-        failedRules: [TextValidationRule],
-        outerRules: Binding<[OuterValidationRule]> = .constant([])
+        failedRules: [ValidationRule]
     ) {
         self.title = title
         self._text = text
         self.failedRules = failedRules
-        self._outerRules = outerRules
     }
 }

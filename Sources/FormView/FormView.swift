@@ -31,19 +31,24 @@ private class FormStateHandler: ObservableObject {
         currentFocusedFieldId = focusedField?.id ?? .empty
        
         // Замыкание onValidateRun вызывается методом validate() FormValidator'a.
-        formValidator.onValidateRun = { [weak self] focusOnFirstFailedField in
+        formValidator.onValidateRun = { @MainActor [weak self] focusOnFirstFailedField in
             guard let self else {
                 return false
             }
             
-            let resutls = newStates.map { $0.onValidate() }
-           
+            var results: [Bool] = []
+            
+            for newState in newStates {
+                let result = await newState.onValidate()
+                results.append(result)
+            }
+                       
             // Фокус на первом зафейленом филде.
-            if let index = resutls.firstIndex(of: false), focusOnFirstFailedField {
+            if let index = results.firstIndex(of: false), focusOnFirstFailedField {
                 currentFocusedFieldId = fieldStates[index].id
             }
                
-            return resutls.allSatisfy { $0 }
+            return results.allSatisfy { $0 }
         }
     }
     

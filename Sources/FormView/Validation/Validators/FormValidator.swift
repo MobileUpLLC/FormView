@@ -8,18 +8,18 @@
 import Foundation
 
 public struct FormValidator {
-    var onValidateRun: ((Bool) -> Bool)?
+    var onValidateRun: ((Bool) async -> Bool)?
     
     public init() {
         onValidateRun = nil
     }
     
-    public func validate(focusOnFirstFailedField: Bool = true) -> Bool {
+    public func validate(focusOnFirstFailedField: Bool = true) async -> Bool {
         guard let onValidateRun else {
             assertionFailure("onValidateRun closure not found")
             return false
         }
         
-        return onValidateRun(focusOnFirstFailedField)
+        return await onValidateRun(focusOnFirstFailedField)
     }
 }

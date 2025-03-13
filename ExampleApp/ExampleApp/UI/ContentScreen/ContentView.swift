@@ -13,58 +13,50 @@ struct ContentView: View {
     
     var body: some View {
         FormView(
-            validate: .never,
+            validate: .onFieldValueChanged,
             hideError: .onValueChanged
         ) { proxy in
             FormField(
                 value: $viewModel.name,
-                rules: [
-                    TextValidationRule.noSpecialCharacters(message: "No spec chars"),
-                    .notEmpty(message: "Name empty"),
-                    .myRule
-                ]
+                rules: viewModel.nameValidationRules
             ) { failedRules in
                 TextInputField(
                     title: "Name",
                     text: $viewModel.name,
-                    failedRules: failedRules,
-                    outerRules: $viewModel.nameOuterRules
+                    failedRules: failedRules
                 )
             }
+            .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.age,
-                rules: [
-                    TextValidationRule.digitsOnly(message: "Digits only"),
-                    .maxLength(count: 2, message: "Max length 2")
-                ]
+                rules: viewModel.ageValidationRules
             ) { failedRules in
                 TextInputField(title: "Age", text: $viewModel.age, failedRules: failedRules)
             }
+            .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.pass,
-                rules: [
-                    TextValidationRule.atLeastOneDigit(message: "One digit"),
-                    .atLeastOneLetter(message: "One letter"),
-                    .notEmpty(message: "Pass not empty")
-                ]
+                rules: viewModel.passValidationRules
             ) { failedRules in
                 SecureInputField(title: "Password", text: $viewModel.pass, failedRules: failedRules)
             }
+            .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.confirmPass,
-                rules: [
-                    TextValidationRule.equalTo(value: viewModel.pass, message: "Not equal to pass"),
-                    .notEmpty(message: "Confirm pass not empty")
-                ]
+                rules: viewModel.confirmPassValidationRules
             ) { failedRules in
                 SecureInputField(title: "Confirm Password", text: $viewModel.confirmPass, failedRules: failedRules)
             }
+            .disabled(viewModel.isLoading)
+            if viewModel.isLoading {
+                ProgressView()
+            }
             Button("Validate") {
-                print("Form is valid: \(proxy.validate())")
+                Task {
+                    print("Form is valid: \(await proxy.validate())")
+                }
             }
-            Button("Apply name outer rules") {
-                viewModel.applyNameOuterRules()
-            }
+            .disabled(viewModel.isLoading)
         }
         .padding(.horizontal, 16)
         .padding(.top, 40)

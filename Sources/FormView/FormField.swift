@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: View where Value == Rule.Value {
-    @Binding private var value: Value
-    @ViewBuilder private let content: ([Rule]) -> Content
+public struct FormField<Content: View>: View {
+    @Binding private var value: String
+    @ViewBuilder private let content: ([ValidationRule]) -> Content
     
-    @State private var failedValidationRules: [Rule] = []
+    @State private var failedValidationRules: [ValidationRule] = []
     
     // Fields Focus
     @FocusState private var isFocused: Bool
@@ -19,14 +19,14 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
     @Environment(\.focusedFieldId) var currentFocusedFieldId
     
     // ValidateInput
-    private let validator: FieldValidator<Rule>
+    private let validator: FieldValidator
     @Environment(\.errorHideBehaviour) var errorHideBehaviour
     @Environment(\.validationBehaviour) var validationBehaviour
     
     public init(
-        value: Binding<Value>,
-        rules: [Rule] = [],
-        @ViewBuilder content: @escaping ([Rule]) -> Content
+        value: Binding<String>,
+        rules: [ValidationRule] = [],
+        @ViewBuilder content: @escaping ([ValidationRule]) -> Content
     ) {
         self._value = value
         self.content = content
@@ -46,7 +46,7 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
                 value: [
                     // Замыкание для каждого филда вызывается FormValidator'ом из FormView для валидации по требованию
                     FieldState(id: id, isFocused: isFocused) {
-                        let failedRules = validator.validate(value: value)
+                        let failedRules = await validator.validate(value: value, isNeedToCheckExternal: true)
                         failedValidationRules = failedRules
                         
                         return failedRules.isEmpty
@@ -57,23 +57,27 @@ public struct FormField<Value: Hashable, Rule: ValidationRule, Content: View>: V
         
         // Fields Validation
             .onChange(of: value) { newValue in
-                if errorHideBehaviour == .onValueChanged {
-                    failedValidationRules = .empty
-                }
-                
-                if validationBehaviour == .onFieldValueChanged {
-                    failedValidationRules = validator.validate(value: newValue)
+                Task { @MainActor in
+                    if errorHideBehaviour == .onValueChanged {
+                        failedValidationRules = .empty
+                    }
+                    
+                    if validationBehaviour == .onFieldValueChanged {
+                        failedValidationRules = await validator.validate(value: newValue, isNeedToCheckExternal: false)
+                    }
                 }
             }
             .onChange(of: isFocused) { newValue in
-                if errorHideBehaviour == .onFocusLost && newValue == false {
-                    failedValidationRules = .empty
-                } else if errorHideBehaviour == .onFocus && newValue == true {
-                    failedValidationRules = .empty
-                }
-                
-                if validationBehaviour == .onFieldFocusLost && newValue == false {
-                    failedValidationRules = validator.validate(value: value)
+                Task { @MainActor in
+                    if errorHideBehaviour == .onFocusLost && newValue == false {
+                        failedValidationRules = .empty
+                    } else if errorHideBehaviour == .onFocus && newValue == true {
+                        failedValidationRules = .empty
+                    }
+                    
+                    if validationBehaviour == .onFieldFocusLost && newValue == false {
+                        failedValidationRules = await validator.validate(value: value, isNeedToCheckExternal: false)
+                    }
                 }
             }
     }

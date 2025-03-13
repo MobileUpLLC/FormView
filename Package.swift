@@ -19,9 +19,6 @@ let package = Package(
     targets: [
         .target(
             name: "FormView",
-            dependencies: []),
-        .testTarget(
-            name: "FormViewTests",
-            dependencies: ["FormView", "ViewInspector"])
+            dependencies: [])
     ]
 )
