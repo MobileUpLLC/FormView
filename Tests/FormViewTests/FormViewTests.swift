@@ -88,12 +88,10 @@ final class FormViewTests: XCTestCase {
         let exp = sut.inspection.inspect { view in
             let scrollView = try view.find(ViewType.ScrollView.self)
             let textField1 = try view.find(viewWithId: 1).find(ViewType.TextField.self)
-//            let formField2 = try view.find(viewWithId: 2).view(FormField.self).actualView()
             
             try scrollView.callOnSubmit()
             try textField1.callOnChange(newValue: "field2", index: 1)
             
-//            XCTAssertEqual(formField2.focusField, "field2")
             XCTAssertTrue(true)
         }
         
