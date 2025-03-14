@@ -9,7 +9,7 @@ import FormView
 extension ValidationRule {
     static var myRule: Self {
         Self.custom {
-            return $0.contains("T") ? nil : "Shold contain T"
+            return $0.contains("T") ? nil : "Should contain T"
         }
     }
 }

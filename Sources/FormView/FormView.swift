@@ -42,7 +42,7 @@ private class FormStateHandler: ObservableObject {
                 let result = await newState.onValidate()
                 results.append(result)
             }
-                       
+            
             // Фокус на первом зафейленом филде.
             if let index = results.firstIndex(of: false), focusOnFirstFailedField {
                 currentFocusedFieldId = fieldStates[index].id

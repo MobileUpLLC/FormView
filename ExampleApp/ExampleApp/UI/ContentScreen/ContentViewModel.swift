@@ -26,6 +26,10 @@ class ContentViewModel: ObservableObject {
         self.coordinator = coordinator
         print("init ContentViewModel")
         
+        setupValidationRules()
+    }
+    
+    private func setupValidationRules() {
         nameValidationRules = [
             ValidationRule.notEmpty(message: "Name empty"),
             ValidationRule.noSpecialCharacters(message: "No spec chars"),

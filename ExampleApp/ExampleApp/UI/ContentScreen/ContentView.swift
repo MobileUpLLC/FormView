@@ -20,11 +20,7 @@ struct ContentView: View {
                 value: $viewModel.name,
                 rules: viewModel.nameValidationRules
             ) { failedRules in
-                TextInputField(
-                    title: "Name",
-                    text: $viewModel.name,
-                    failedRules: failedRules
-                )
+                TextInputField(title: "Name", text: $viewModel.name, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
