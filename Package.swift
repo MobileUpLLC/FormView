@@ -11,7 +11,8 @@ let package = Package(
     products: [
         .library(
             name: "FormView",
-            targets: ["FormView"])
+            targets: ["FormView"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/nalexn/ViewInspector", exact: "0.10.1")
@@ -19,6 +20,7 @@ let package = Package(
     targets: [
         .target(
             name: "FormView",
-            dependencies: [])
+            dependencies: []
+        )
     ]
 )
