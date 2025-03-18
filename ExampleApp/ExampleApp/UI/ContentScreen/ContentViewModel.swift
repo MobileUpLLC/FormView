@@ -39,7 +39,7 @@ class ContentViewModel: ObservableObject {
             ValidationRule.myRule,
             ValidationRule.external { [weak self] in
                 guard let self else {
-                    return ("", true)
+                    return (true, "")
                 }
                 
                 return await self.availabilityCheckAsync($0)
@@ -67,13 +67,13 @@ class ContentViewModel: ObservableObject {
         confirmPassValidationRules = [
             ValidationRule.notEmpty(conditions: [.manual, .onFieldValueChanged], message: "Confirm pass not empty"),
             ValidationRule.custom(conditions: [.manual, .onFieldValueChanged]) { [weak self] in
-                return $0 == self?.pass ? ("Not equal to pass", true) : ("Not equal to pass", false)
+                return ($0 == self?.pass, "Not equal to pass")
             }
         ]
     }
     
     @MainActor
-    private func availabilityCheckAsync(_ value: String) async -> (String, Bool) {
+    private func availabilityCheckAsync(_ value: String) async -> (Bool, String) {
         print(#function)
         
         isLoading = true
@@ -84,7 +84,7 @@ class ContentViewModel: ObservableObject {
         
         isLoading = false
         
-        return isAvailable ? ("Not available", true) : ("Not available", false)
+        return (isAvailable, "Not available")
     }
     
     deinit {
