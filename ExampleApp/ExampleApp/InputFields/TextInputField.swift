@@ -17,7 +17,7 @@ struct TextInputField: View {
         VStack(alignment: .leading) {
             TextField(title, text: $text)
                 .background(Color.white)
-            if let errorMessage = failedRules.first?.message {
+            if let errorMessage = failedRules.first?.message, errorMessage.isEmpty == false {
                 Text(errorMessage)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.red)
