@@ -91,7 +91,11 @@ public struct FormField<Content: View>: View {
                         )
                     }
                     
-                    if validationBehaviour.contains(.onFieldFocus) && newValue == true {
+                    if
+                        validationBehaviour.contains(.onFieldFocus)
+                        && failedValidationRules.isEmpty
+                        && newValue == true
+                    {
                         failedValidationRules = await validator.validate(
                             value: value,
                             condition: .onFieldFocus,
