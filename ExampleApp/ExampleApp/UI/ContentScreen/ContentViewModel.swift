@@ -47,15 +47,8 @@ class ContentViewModel: ObservableObject {
         ]
         
         ageValidationRules = [
-            ValidationRule.digitsOnly(
-                conditions: [.manual, .onFieldValueChanged],
-                message: "Digits only"
-            ),
-            ValidationRule.maxLength(
-                conditions: [.manual, .onFieldValueChanged],
-                count: 2,
-                message: "Max length 2"
-            )
+            ValidationRule.digitsOnly(conditions: [.manual, .onFieldValueChanged], message: "Digits only"),
+            ValidationRule.maxLength(conditions: [.manual, .onFieldValueChanged], count: 2, message: "Max length 2")
         ]
         
         passValidationRules = [

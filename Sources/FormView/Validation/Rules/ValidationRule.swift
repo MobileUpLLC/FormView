@@ -27,11 +27,10 @@ public class ValidationRule {
     }
     
     public func check(value: String) async -> Bool {
-        let checkResult = await checkClosure(value)
-        let message = checkResult.1
+        let (result, message) = await checkClosure(value)
         self.message = message
         
-        return checkResult.0
+        return result
     }
 }
 
