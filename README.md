@@ -36,16 +36,15 @@ struct MyField: View {
     let title: String
     let text: Binding<String>
     // Failed rules come from FormField during whole form validation.
-    let failedRules: [TextValidationRule]
+    let failedRules: [ValidationRule]
     
     var body: some View {
         VStack(alignment: .leading) {
             TextField(title, text: text)
                 .background(Color.white)
             // Display error.
-            if failedRules.isEmpty == false {
-                // Show error for first failed rule.
-                Text(failedRules[0].errorMessage)
+            if let errorMessage = failedRules.first?.message, errorMessage.isEmpty == false {
+                Text(errorMessage)
                     .foregroundColor(.red)
             }
         }
@@ -60,12 +59,12 @@ struct ContentView: View {
     
     var body: some View {
         FormView( First failed field 
-            validate: .never, // Form will be validated on user action.
+            validate: [.manual], // Form will be validated on user action.
             hideError: .onValueChanged // Error for field wil be hidden on field value change.
         ) { proxy in
             FormField(
                 value: $name,
-                rules: [TextValidationRule.notEmpty(message: "Name field should no be empty")]
+                rules: [ValidationRule.notEmpty(conditions: [.manual], message: "Name field should no be empty")]
             ) { failedRules in
                 MyField(title: "Name", text: $name, failedRules: failedRules)
             }
@@ -81,10 +80,11 @@ struct ContentView: View {
 
 ## Documentation
 ### Valildation Behaviour
-Form validated at one of three specific times:
+The form can be validated under one or multiple conditions simultaneously, such as:
 * `onFieldValueChanged` - each field validated on it's value changed.
+* `onFieldFocus` - each field validated on focus gain.
 * `onFieldFocusLost` - each field validated on focus lost.
-* `never` - on call `proxy.validate()`. Default behaviour. First failed field is focused automatically.
+* `manual` - on call `proxy.validate()`. Default behaviour. First failed field is focused automatically.
 
 ### Error Hiding Behaviour
 Error for each field gets hidden at one of three specific times:
@@ -93,122 +93,44 @@ Error for each field gets hidden at one of three specific times:
 * `onFucusLost` - field with error lost focus.
 
 ### Custom Validation Rules
-One of two ways:
-1. Adopt protocol `ValidationRule`:
-```swift
-public protocol ValidationRule {
-    associatedtype Value
-    
-    func check(value: Value) -> Bool
-}
-```
 
-2. Extend `TextValidationRule`:
+Extend `ValidationRule`:
 ```swift
-extension TextValidationRule {
+extension ValidationRule {
     static var myRule: Self {
-        TextValidationRule(message: "Text should not be empty") { value in
-            value.isEmpty == false
+        Self.custom(conditions: [.manual, .onFieldValueChanged, .onFieldFocus]) {
+            return ($0.isEmpty == false, "Text should not be empty")
         }
     }
 }
 ```
 
-A banch of predefind rules for text validation is available via `TextValidationRule`:
+A banch of predefind rules for text validation is available via `ValidationRule`:
 * notEmpty - value not empty.
 * digitsOnly - value contains only digits.
 * lettersOnly - value contains only letters.
 * email - is valid email.
 * minLenght/maxLenth - value length greate/less.
 * regex - evaluate regular expresstion.
-* equalTo - value equal to another value. Useful for password confirmation.
 * etc...
 
-### Outer Validation Rules
-If you need to display validation errors from external services (e.g., a backend), follow these steps:
-1. Create an `OuterValidationRule` enum:
+### External Validation Rules
+If you need to display validation errors from external services (e.g., a backend) use `ValidationRule.external`:
 ```swift
-enum OuterValidationRule {
-    case duplicateName
-    
-    var message: String {
-        switch self {
-        case .duplicateName:
-            return "This name already exists"
-        }
+ValidationRule.external { [weak self] in
+    guard let self else {
+        return (true, "")
     }
+
+    return await self.availabilityCheckAsync($0)
+}
+
+private func availabilityCheckAsync(_ value: String) async -> (Bool, String) {
+    let isAvailable = try await ...
+
+    return (isAvailable, "Not available")
 }
 ```
-
-2. Update the text field component:
-```swift
-struct TextInputField: View {
-    let title: LocalizedStringKey
-    @Binding var text: String
-    let failedRules: [TextValidationRule]
-    @Binding var outerRules: [OuterValidationRule]
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            TextField(title, text: $text)
-                .background(Color.white)
-            if let errorMessage = getErrorMessage() {
-                Text(errorMessage)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundColor(.red)
-            }
-            Spacer()
-        }
-        .frame(height: 50)
-        .onChange(of: text) { _ in
-            outerRules = []
-        }
-    }
-    
-    private func getErrorMessage() -> String? {
-        if let message = failedRules.first?.message {
-            return message
-        } else if let message = outerRules.first?.message {
-            return message
-        } else {
-            return nil
-        }
-    }
-    
-    init(
-        title: LocalizedStringKey,
-        text: Binding<String>,
-        failedRules: [TextValidationRule],
-        outerRules: Binding<[OuterValidationRule]> = .constant([])
-    ) {
-        self.title = title
-        self._text = text
-        self.failedRules = failedRules
-        self._outerRules = outerRules
-    }
-}
-```
-3. Update the text field initialization in your view:
-```swift
-TextInputField(
-    title: "Name",
-    text: $viewModel.name,
-    failedRules: failedRules,
-    outerRules: $viewModel.nameOuterRules
-)
-```
-
-4. In your ViewModel, declare a `@Published` property of type `OuterValidationRule` and update its rules as needed:
-```swift
-class ContentViewModel: ObservableObject {
-    @Published var nameOuterRules: [OuterValidationRule] = []
-    
-    func applyNameOuterRules() {
-        nameOuterRules = [.duplicateName]
-    }
-}
-```
-
 
 ### Implementation Details
 FormView doesn't use any external dependencies.
