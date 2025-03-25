@@ -36,16 +36,15 @@ struct MyField: View {
     let title: String
     let text: Binding<String>
     // Failed rules come from FormField during whole form validation.
-    let failedRules: [TextValidationRule]
+    let failedRules: [ValidationRule]
     
     var body: some View {
         VStack(alignment: .leading) {
             TextField(title, text: text)
                 .background(Color.white)
             // Display error.
-            if failedRules.isEmpty == false {
-                // Show error for first failed rule.
-                Text(failedRules[0].errorMessage)
+            if let errorMessage = failedRules.first?.message, errorMessage.isEmpty == false {
+                Text(errorMessage)
                     .foregroundColor(.red)
             }
         }
@@ -106,7 +105,7 @@ extension ValidationRule {
 }
 ```
 
-A banch of predefind rules for text validation is available via `TextValidationRule`:
+A banch of predefind rules for text validation is available via `ValidationRule`:
 * notEmpty - value not empty.
 * digitsOnly - value contains only digits.
 * lettersOnly - value contains only letters.
