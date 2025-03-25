@@ -10,7 +10,7 @@ import SwiftUI
 struct FieldState {
     var id: String
     var isFocused: Bool
-    var onValidate: () -> Bool
+    var onValidate: () async -> Bool
 }
 
 extension FieldState: Equatable {

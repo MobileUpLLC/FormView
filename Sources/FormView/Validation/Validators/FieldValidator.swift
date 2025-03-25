@@ -7,16 +7,22 @@
 
 import SwiftUI
 
-struct FieldValidator<Rule: ValidationRule> {
-    private let rules: [Rule]
+struct FieldValidator {
+    private let rules: [ValidationRule]
     
-    init(rules: [Rule]) {
+    init(rules: [ValidationRule]) {
         self.rules = rules
     }
    
-    func validate(value: Rule.Value) -> [Rule] {
-        return rules.filter {
-            $0.check(value: value) == false
+    func validate(value: String, isNeedToCheckExternal: Bool) async -> [ValidationRule] {
+        var failedRules: [ValidationRule] = []
+        
+        for rule in rules where rule.isExternal == false || isNeedToCheckExternal {
+            if await rule.check(value: value) == false {
+                failedRules.append(rule)
+            }
         }
+        
+        return failedRules
     }
 }

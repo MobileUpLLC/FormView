@@ -10,20 +10,30 @@ import FormView
 
 struct TextInputField: View {
     let title: LocalizedStringKey
-    let text: Binding<String>
-    let failedRules: [TextValidationRule]
+    @Binding var text: String
+    let failedRules: [ValidationRule]
     
     var body: some View {
         VStack(alignment: .leading) {
-            TextField(title, text: text)
+            TextField(title, text: $text)
                 .background(Color.white)
-            if failedRules.isEmpty == false {
-                Text(failedRules[0].message)
+            if let errorMessage = failedRules.first?.message {
+                Text(errorMessage)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(.red)
             }
             Spacer()
         }
         .frame(height: 50)
+    }
+    
+    init(
+        title: LocalizedStringKey,
+        text: Binding<String>,
+        failedRules: [ValidationRule]
+    ) {
+        self.title = title
+        self._text = text
+        self.failedRules = failedRules
     }
 }
