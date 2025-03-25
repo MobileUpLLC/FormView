@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         FormView(
-            validate: .onFieldValueChanged,
+            validate: [.manual, .onFieldValueChanged, .onFieldFocus],
             hideError: .onValueChanged
         ) { proxy in
             FormField(

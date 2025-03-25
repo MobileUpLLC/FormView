@@ -23,11 +23,11 @@ extension EnvironmentValues {
 // MARK: - ValidationBehaviourKey
 
 private struct ValidationBehaviourKey: EnvironmentKey {
-    static var defaultValue: ValidationBehaviour = .never
+    static var defaultValue: [ValidationBehaviour] = [.manual]
 }
 
 extension EnvironmentValues {
-    var validationBehaviour: ValidationBehaviour {
+    var validationBehaviour: [ValidationBehaviour] {
         get { self[ValidationBehaviourKey.self] }
         set { self[ValidationBehaviourKey.self] = newValue }
     }

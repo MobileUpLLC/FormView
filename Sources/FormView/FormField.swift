@@ -46,7 +46,11 @@ public struct FormField<Content: View>: View {
                 value: [
                     // Замыкание для каждого филда вызывается FormValidator'ом из FormView для валидации по требованию
                     FieldState(id: id, isFocused: isFocused) {
-                        let failedRules = await validator.validate(value: value, isNeedToCheckExternal: true)
+                        let failedRules = await validator.validate(
+                            value: value,
+                            condition: .manual,
+                            isNeedToCheckExternal: true
+                        )
                         failedValidationRules = failedRules
                         
                         return failedRules.isEmpty
@@ -62,8 +66,12 @@ public struct FormField<Content: View>: View {
                         failedValidationRules = .empty
                     }
                     
-                    if validationBehaviour == .onFieldValueChanged {
-                        failedValidationRules = await validator.validate(value: newValue, isNeedToCheckExternal: false)
+                    if validationBehaviour.contains(.onFieldValueChanged) {
+                        failedValidationRules = await validator.validate(
+                            value: newValue,
+                            condition: .onFieldValueChanged,
+                            isNeedToCheckExternal: false
+                        )
                     }
                 }
             }
@@ -75,8 +83,24 @@ public struct FormField<Content: View>: View {
                         failedValidationRules = .empty
                     }
                     
-                    if validationBehaviour == .onFieldFocusLost && newValue == false {
-                        failedValidationRules = await validator.validate(value: value, isNeedToCheckExternal: false)
+                    if validationBehaviour.contains(.onFieldFocusLost) && newValue == false {
+                        failedValidationRules = await validator.validate(
+                            value: value,
+                            condition: .onFieldFocusLost,
+                            isNeedToCheckExternal: false
+                        )
+                    }
+                    
+                    if
+                        validationBehaviour.contains(.onFieldFocus)
+                        && failedValidationRules.isEmpty
+                        && newValue == true
+                    {
+                        failedValidationRules = await validator.validate(
+                            value: value,
+                            condition: .onFieldFocus,
+                            isNeedToCheckExternal: false
+                        )
                     }
                 }
             }

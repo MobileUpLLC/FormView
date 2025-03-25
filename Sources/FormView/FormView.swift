@@ -9,8 +9,9 @@ import SwiftUI
 
 public enum ValidationBehaviour {
     case onFieldValueChanged
+    case onFieldFocus
     case onFieldFocusLost
-    case never
+    case manual
 }
 
 public enum ErrorHideBehaviour {
@@ -65,10 +66,10 @@ public struct FormView<Content: View>: View {
     @ViewBuilder private let content: (FormValidator) -> Content
     
     private let errorHideBehaviour: ErrorHideBehaviour
-    private let validationBehaviour: ValidationBehaviour
+    private let validationBehaviour: [ValidationBehaviour]
     
     public init(
-        validate: ValidationBehaviour = .never,
+        validate: [ValidationBehaviour] = [.manual],
         hideError: ErrorHideBehaviour = .onValueChanged,
         @ViewBuilder content: @escaping (FormValidator) -> Content
     ) {

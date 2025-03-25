@@ -31,33 +31,42 @@ class ContentViewModel: ObservableObject {
     
     private func setupValidationRules() {
         nameValidationRules = [
-            ValidationRule.notEmpty(message: "Name empty"),
-            ValidationRule.noSpecialCharacters(message: "No spec chars"),
+            ValidationRule.notEmpty(conditions: [.manual, .onFieldValueChanged, .onFieldFocus], message: "Name empty"),
+            ValidationRule.noSpecialCharacters(
+                conditions: [.manual, .onFieldValueChanged, .onFieldFocus],
+                message: "No spec chars"
+            ),
             ValidationRule.myRule,
-            ValidationRule.external { [weak self] in await self?.availabilityCheckAsync($0) }
+            ValidationRule.external { [weak self] in
+                guard let self else {
+                    return (true, "")
+                }
+                
+                return await self.availabilityCheckAsync($0)
+            }
         ]
         
         ageValidationRules = [
-            ValidationRule.digitsOnly(message: "Digits only"),
-            ValidationRule.maxLength(count: 2, message: "Max length 2")
+            ValidationRule.digitsOnly(conditions: [.manual, .onFieldValueChanged], message: "Digits only"),
+            ValidationRule.maxLength(conditions: [.manual, .onFieldValueChanged], count: 2, message: "Max length 2")
         ]
         
         passValidationRules = [
-            ValidationRule.atLeastOneDigit(message: "One digit"),
-            ValidationRule.atLeastOneLetter(message: "One letter"),
-            ValidationRule.notEmpty(message: "Pass not empty")
+            ValidationRule.atLeastOneDigit(conditions: [.manual, .onFieldValueChanged], message: "One digit"),
+            ValidationRule.atLeastOneLetter(conditions: [.manual, .onFieldValueChanged], message: "One letter"),
+            ValidationRule.notEmpty(conditions: [.manual, .onFieldValueChanged], message: "Pass not empty")
         ]
         
         confirmPassValidationRules = [
-            ValidationRule.notEmpty(message: "Confirm pass not empty"),
-            ValidationRule.custom { [weak self] in
-                return $0 == self?.pass ? nil : "Not equal to pass"
+            ValidationRule.notEmpty(conditions: [.manual, .onFieldValueChanged], message: "Confirm pass not empty"),
+            ValidationRule.custom(conditions: [.manual, .onFieldValueChanged]) { [weak self] in
+                return ($0 == self?.pass, "Not equal to pass")
             }
         ]
     }
     
     @MainActor
-    private func availabilityCheckAsync(_ value: String) async -> String? {
+    private func availabilityCheckAsync(_ value: String) async -> (Bool, String) {
         print(#function)
         
         isLoading = true
@@ -68,7 +77,7 @@ class ContentViewModel: ObservableObject {
         
         isLoading = false
         
-        return isAvailable ? nil : "Not available"
+        return (isAvailable, "Not available")
     }
     
     deinit {
