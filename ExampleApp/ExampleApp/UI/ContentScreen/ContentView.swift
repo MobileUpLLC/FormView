@@ -10,11 +10,13 @@ import FormView
 
 struct ContentView: View {
     @ObservedObject var viewModel: ContentViewModel
+    @State var isAllFieldValid = false
     
     var body: some View {
         FormView(
             validate: [.manual, .onFieldValueChanged, .onFieldFocus],
-            hideError: .onValueChanged
+            hideError: .onValueChanged,
+            isAllFieldValid: $isAllFieldValid
         ) { proxy in
             FormField(
                 value: $viewModel.name,
@@ -52,7 +54,7 @@ struct ContentView: View {
                     print("Form is valid: \(await proxy.validate())")
                 }
             }
-            .disabled(viewModel.isLoading)
+            .disabled(isAllFieldValid == false || viewModel.isLoading)
         }
         .padding(.horizontal, 16)
         .padding(.top, 40)

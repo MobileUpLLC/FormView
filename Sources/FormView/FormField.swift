@@ -12,6 +12,7 @@ public struct FormField<Content: View>: View {
     @ViewBuilder private let content: ([ValidationRule]) -> Content
     
     @State private var failedValidationRules: [ValidationRule] = []
+    private var isValid: Bool { failedValidationRules.isEmpty && value.isEmpty == false }
     
     // Fields Focus
     @FocusState private var isFocused: Bool
@@ -57,6 +58,7 @@ public struct FormField<Content: View>: View {
                     }
                 ]
             )
+            .preference(key: FieldsValidationKey.self, value: [isValid])
             .focused($isFocused)
         
         // Fields Validation
