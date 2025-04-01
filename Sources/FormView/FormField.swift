@@ -12,6 +12,8 @@ public struct FormField<Content: View>: View {
     @ViewBuilder private let content: ([ValidationRule]) -> Content
     
     @State private var failedValidationRules: [ValidationRule] = []
+    private var isValid: Bool { getValidationStatus() }
+    private var isRequired: Bool
     
     // Fields Focus
     @FocusState private var isFocused: Bool
@@ -26,9 +28,11 @@ public struct FormField<Content: View>: View {
     public init(
         value: Binding<String>,
         rules: [ValidationRule] = [],
+        isRequired: Bool,
         @ViewBuilder content: @escaping ([ValidationRule]) -> Content
     ) {
         self._value = value
+        self.isRequired = isRequired
         self.content = content
         self.validator = FieldValidator(rules: rules)
     }
@@ -57,6 +61,7 @@ public struct FormField<Content: View>: View {
                     }
                 ]
             )
+            .preference(key: FieldsValidationKey.self, value: [isValid])
             .focused($isFocused)
         
         // Fields Validation
@@ -93,8 +98,8 @@ public struct FormField<Content: View>: View {
                     
                     if
                         validationBehaviour.contains(.onFieldFocus)
-                        && failedValidationRules.isEmpty
-                        && newValue == true
+                            && failedValidationRules.isEmpty
+                            && newValue == true
                     {
                         failedValidationRules = await validator.validate(
                             value: value,
@@ -104,5 +109,9 @@ public struct FormField<Content: View>: View {
                     }
                 }
             }
+    }
+    
+    private func getValidationStatus() -> Bool {
+        isRequired ? failedValidationRules.isEmpty && value.isEmpty == false : failedValidationRules.isEmpty
     }
 }

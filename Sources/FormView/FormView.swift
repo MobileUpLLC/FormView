@@ -63,6 +63,7 @@ private class FormStateHandler: ObservableObject {
 
 public struct FormView<Content: View>: View {
     @StateObject private var formStateHandler = FormStateHandler()
+    @Binding private var isAllFieldValid: Bool
     @ViewBuilder private let content: (FormValidator) -> Content
     
     private let errorHideBehaviour: ErrorHideBehaviour
@@ -71,11 +72,13 @@ public struct FormView<Content: View>: View {
     public init(
         validate: [ValidationBehaviour] = [.manual],
         hideError: ErrorHideBehaviour = .onValueChanged,
+        isAllFieldValid: Binding<Bool> = .constant(true),
         @ViewBuilder content: @escaping (FormValidator) -> Content
     ) {
         self.content = content
         self.validationBehaviour = validate
         self.errorHideBehaviour = hideError
+        self._isAllFieldValid = isAllFieldValid
     }
     
     public var body: some View {
@@ -84,6 +87,9 @@ public struct FormView<Content: View>: View {
             // замыканием и @StateObject
             .onPreferenceChange(FieldStatesKey.self) { [weak formStateHandler] newStates in
                 formStateHandler?.updateFieldStates(newStates: newStates)
+            }
+            .onPreferenceChange(FieldsValidationKey.self) { validationResults in
+                isAllFieldValid = validationResults.contains(false) == false
             }
             .onSubmit(of: .text) { [weak formStateHandler] in
                 formStateHandler?.submit()
