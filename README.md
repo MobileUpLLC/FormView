@@ -67,7 +67,8 @@ struct ContentView: View {
         ) { proxy in
             FormField(
                 value: $name,
-                rules: [TextValidationRule.notEmpty(message: "Name field should no be empty")]
+                rules: [TextValidationRule.notEmpty(message: "Name field should no be empty")],
+                isRequired: true, // field parameter, necessary for correct determination of validity of all fields
             ) { failedRules in
                 MyField(title: "Name", text: $name, failedRules: failedRules)
             }

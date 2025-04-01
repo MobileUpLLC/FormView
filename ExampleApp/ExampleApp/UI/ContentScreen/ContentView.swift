@@ -20,28 +20,32 @@ struct ContentView: View {
         ) { proxy in
             FormField(
                 value: $viewModel.name,
-                rules: viewModel.nameValidationRules
+                rules: viewModel.nameValidationRules,
+                isRequired: true
             ) { failedRules in
                 TextInputField(title: "Name", text: $viewModel.name, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.age,
-                rules: viewModel.ageValidationRules
+                rules: viewModel.ageValidationRules,
+                isRequired: false
             ) { failedRules in
                 TextInputField(title: "Age", text: $viewModel.age, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.pass,
-                rules: viewModel.passValidationRules
+                rules: viewModel.passValidationRules,
+                isRequired: true
             ) { failedRules in
                 SecureInputField(title: "Password", text: $viewModel.pass, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.confirmPass,
-                rules: viewModel.confirmPassValidationRules
+                rules: viewModel.confirmPassValidationRules,
+                isRequired: true
             ) { failedRules in
                 SecureInputField(title: "Confirm Password", text: $viewModel.confirmPass, failedRules: failedRules)
             }
