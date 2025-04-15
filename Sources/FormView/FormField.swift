@@ -12,8 +12,9 @@ public struct FormField<Content: View>: View {
     @ViewBuilder private let content: ([ValidationRule]) -> Content
     
     @State private var failedValidationRules: [ValidationRule] = []
+    
+    private let isRequired: Bool
     private var isValid: Bool { getValidationStatus() }
-    private var isRequired: Bool
     
     // Fields Focus
     @FocusState private var isFocused: Bool

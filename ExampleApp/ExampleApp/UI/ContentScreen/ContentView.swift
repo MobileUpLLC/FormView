@@ -10,7 +10,8 @@ import FormView
 
 struct ContentView: View {
     @ObservedObject var viewModel: ContentViewModel
-    @State var isAllFieldValid = false
+    
+    @State private var isAllFieldValid = false
     
     var body: some View {
         FormView(

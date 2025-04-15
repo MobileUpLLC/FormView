@@ -57,7 +57,8 @@ struct MyField: View {
 ```swift
 struct ContentView: View {
     @State var name: String = ""
-    @State var isAllFieldValid = false
+    
+    @State private var isAllFieldValid = false
     
     var body: some View {
         FormView( First failed field 
