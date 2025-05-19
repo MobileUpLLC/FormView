@@ -57,14 +57,18 @@ struct MyField: View {
 struct ContentView: View {
     @State var name: String = ""
     
+    @State private var isAllFieldValid = false
+    
     var body: some View {
         FormView( First failed field 
             validate: [.manual], // Form will be validated on user action.
-            hideError: .onValueChanged // Error for field wil be hidden on field value change.
+            hideError: .onValueChanged, // Error for field wil be hidden on field value change.
+            isAllFieldValid: $isAllFieldValid // Property indicating the result of validation of all fields without focus
         ) { proxy in
             FormField(
                 value: $name,
-                rules: [ValidationRule.notEmpty(conditions: [.manual], message: "Name field should no be empty")]
+                rules: [TextValidationRule.notEmpty(message: "Name field should no be empty")],
+                isRequired: true, // field parameter, necessary for correct determination of validity of all fields
             ) { failedRules in
                 MyField(title: "Name", text: $name, failedRules: failedRules)
             }
@@ -73,6 +77,7 @@ struct ContentView: View {
                 // Validate form on user action.
                 print("Form is valid: \(proxy.validate())")
             }
+            .disabled(isAllFieldValid == false) // Use isAllFieldValid to automatically disable the action button
         }
     }
 }
@@ -91,6 +96,9 @@ Error for each field gets hidden at one of three specific times:
 * `onValueChanged` - value of field with error has changed. Defaule behaviour.
 * `onFocus` - field with error is focused..
 * `onFucusLost` - field with error lost focus.
+
+### Is All Field Valid
+Property indicating the result of validation of all fields without focus. Using this property you can additionally build ui update logic, for example block the next button.
 
 ### Custom Validation Rules
 
@@ -146,7 +154,7 @@ FormView doesn't use any external dependencies.
 dependencies: [
     .package(
         url: "https://github.com/MobileUpLLC/FormView",
-        .upToNextMajor(from: "1.1.2")
+        .upToNextMajor(from: "1.3.0")
     )
 ]
 ```

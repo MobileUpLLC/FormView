@@ -11,35 +11,42 @@ import FormView
 struct ContentView: View {
     @ObservedObject var viewModel: ContentViewModel
     
+    @State private var isAllFieldValid = false
+    
     var body: some View {
         FormView(
             validate: [.manual, .onFieldValueChanged, .onFieldFocus],
-            hideError: .onValueChanged
+            hideError: .onValueChanged,
+            isAllFieldValid: $isAllFieldValid
         ) { proxy in
             FormField(
                 value: $viewModel.name,
-                rules: viewModel.nameValidationRules
+                rules: viewModel.nameValidationRules,
+                isRequired: true
             ) { failedRules in
                 TextInputField(title: "Name", text: $viewModel.name, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.age,
-                rules: viewModel.ageValidationRules
+                rules: viewModel.ageValidationRules,
+                isRequired: false
             ) { failedRules in
                 TextInputField(title: "Age", text: $viewModel.age, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.pass,
-                rules: viewModel.passValidationRules
+                rules: viewModel.passValidationRules,
+                isRequired: true
             ) { failedRules in
                 SecureInputField(title: "Password", text: $viewModel.pass, failedRules: failedRules)
             }
             .disabled(viewModel.isLoading)
             FormField(
                 value: $viewModel.confirmPass,
-                rules: viewModel.confirmPassValidationRules
+                rules: viewModel.confirmPassValidationRules,
+                isRequired: true
             ) { failedRules in
                 SecureInputField(title: "Confirm Password", text: $viewModel.confirmPass, failedRules: failedRules)
             }
@@ -52,7 +59,7 @@ struct ContentView: View {
                     print("Form is valid: \(await proxy.validate())")
                 }
             }
-            .disabled(viewModel.isLoading)
+            .disabled(isAllFieldValid == false || viewModel.isLoading)
         }
         .padding(.horizontal, 16)
         .padding(.top, 40)
